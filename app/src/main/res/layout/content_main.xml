@@ -60,11 +60,45 @@
         </LinearLayout>
     </FrameLayout>
 
-    <ListView
-        android:id="@+id/id_listview"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="#f2f2f2"
-        android:dividerHeight="@dimen/x8"
-        android:padding="@dimen/x8" />
+        android:layout_height="wrap_content">
+
+        <jacketjie.common.libray.custom.view.pulltorefresh.PullRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/id_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#f2f2f2"
+                android:divider="#f2f2f2"
+                android:dividerHeight="@dimen/x8"
+                android:padding="@dimen/x8" />
+        </jacketjie.common.libray.custom.view.pulltorefresh.PullRefreshLayout>
+
+        <jacketjie.common.libray.custom.view.expandablelayout.ExpandableRelativeLayout xmlns:expand="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/expandableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            expand:ael_duration="210"
+            expand:ael_interpolator="linear"
+            expand:ael_orientation="vertical">
+
+            <GridView
+                android:id="@+id/gridview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/main_bg_color"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:horizontalSpacing="10dp"
+                android:numColumns="3"
+                android:padding="10dp"
+                android:scrollbars="none"
+                android:verticalSpacing="10dp" />
+        </jacketjie.common.libray.custom.view.expandablelayout.ExpandableRelativeLayout>
+    </FrameLayout>
 </LinearLayout>

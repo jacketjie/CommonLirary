@@ -11,16 +11,12 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import jacketjie.common.libray.custom.view.Panel;
-import jacketjie.common.libray.custom.view.interpolator.EasingType;
-import jacketjie.common.libray.custom.view.interpolator.ExpoInterpolator;
 import jacketjie.common.libray.network.NetworkAsyncTask;
 import jacketjie.common.libray.view.BaseActivity;
 
 public class MainActivity extends BaseActivity {
     private ViewGroup group;
     private Toolbar toolbar;
-    private Panel topPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +28,9 @@ public class MainActivity extends BaseActivity {
 
         group = (ViewGroup) findViewById(R.id.id_parent);
 //        new TestAsyncTask(this,group,false).execute("");
-        topPanel = (Panel) findViewById(R.id.topPanel);
-        topPanel.setInterpolator(new ExpoInterpolator(EasingType.OUT));
     }
 
     public void test(View view){
-        if (topPanel.isOpen()){
-            topPanel.setOpen(false,true);
-        }else
-            topPanel.setOpen(true,true);
     }
 
     @Override

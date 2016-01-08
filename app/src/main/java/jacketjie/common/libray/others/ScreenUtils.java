@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 
 /**
@@ -121,6 +122,60 @@ public class ScreenUtils
 		view.destroyDrawingCache();
 		return bp;
 
+	}
+
+	/**
+	 * 测量
+	 *
+	 * @param view
+	 * @return
+	 */
+	public static int[] measure(View view) {
+		int realWidth = 0;
+		int realHeight = 0;
+		if (view instanceof ViewGroup) {
+			return measureViewGroup((ViewGroup) view);
+		} else {
+			return measureView(view);
+		}
+	}
+
+	/**
+	 * 测量ViewGroup
+	 *
+	 * @param group
+	 * @return
+	 */
+	public static int[] measureViewGroup(ViewGroup group) {
+		int sumWidth = 0, sumHeight = 0;
+		for (int i = 0; i < group.getChildCount(); i++) {
+			View child = group.getChildAt(i);
+			if (child instanceof ViewGroup) {
+				sumWidth += measureViewGroup((ViewGroup) child)[0];
+				sumHeight += measureViewGroup((ViewGroup) child)[1];
+			} else {
+				sumWidth += measureView(child)[0];
+				sumHeight += measureView(child)[1];
+			}
+		}
+		return new int[]{sumWidth, sumHeight};
+	}
+
+	/**
+	 * 策略View
+	 *
+	 * @param view
+	 * @return
+	 */
+	public static int[] measureView(View view) {
+		int h = View.MeasureSpec.makeMeasureSpec(0,
+				View.MeasureSpec.UNSPECIFIED);
+		int w = View.MeasureSpec.makeMeasureSpec(0,
+				View.MeasureSpec.UNSPECIFIED);
+		view.measure(w, h);
+		int width = view.getMeasuredWidth();
+		int height = view.getMeasuredHeight();
+		return new int[]{width, height};
 	}
 
 }

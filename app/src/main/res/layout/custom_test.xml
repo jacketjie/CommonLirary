@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/id_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/one"
+            android:text="1.View动画（渐变动画）的功能是有限的，大家可以尝试使用属性动画"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/two"
+            android:text="2.为了在各种安卓版本上使用属性动画，你需要采用nineoldandroids，它是GitHub开源项目，jar包和源码都可以在网上下到，如果下不到jar包，我可以发给大家"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/one"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/three"
+            android:layout_below="@+id/two"
+            android:text="3.再复杂的动画都是简单动画的合理组合，再加上本文介绍的方法，可以对任何属性作用动画效果，也就是说你几乎可以做出任何动画"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_below="@+id/three"
+        android:id="@+id/four"
+        android:text="4.属性动画中的插值器（Interpolator）和估值器（TypeEvaluator）很重要，它是实现非匀速动画的重要手段，你应该试着搞懂它，最好你还能够自定义它们"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test"
+        android:id="@+id/button"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>
