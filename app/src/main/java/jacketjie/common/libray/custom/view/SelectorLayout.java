@@ -1,3 +1,4 @@
+
 package jacketjie.common.libray.custom.view;
 
 import android.animation.Animator;
@@ -11,6 +12,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 
 import jacketjie.common.libray.R;
@@ -23,9 +26,11 @@ public class SelectorLayout extends LinearLayout {
     private int mDuration;
     private static final int Default_druation = 250;
     private static final int Default_style = 0;
-    private Styleable curStyle = Styleable.Drawable;
     private boolean isAnimation;
     private boolean isExpandable = true;
+    private Interpolator interpolator = new LinearInterpolator();
+    private Styleable curStyle = Styleable.Drawable;
+    private Styleable lastStyle = curStyle;
     private Direction curDirection = Direction.VerticalDirection;
 
     public enum Direction {
@@ -49,6 +54,14 @@ public class SelectorLayout extends LinearLayout {
     public SelectorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr);
+    }
+
+    public Interpolator getInterpolator() {
+        return interpolator;
+    }
+
+    public void setInterpolator(Interpolator interpolator) {
+        this.interpolator = interpolator;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -78,13 +91,14 @@ public class SelectorLayout extends LinearLayout {
     }
 
     public void setCurStyle(Styleable curStyle) {
+        this.lastStyle = this.curStyle;
         this.curStyle = curStyle;
-        if (curStyle == Styleable.Drawable) {
-            setTranslationY(0);
-        } else if (curStyle == Styleable.Expanable) {
-            getLayoutParams().height = getRealHeight();
-            requestLayout();
-        }
+//        if (curStyle == Styleable.Drawable) {
+//            setTranslationY(0);
+//        } else if (curStyle == Styleable.Expanable) {
+//            getLayoutParams().height = getRealHeight();
+//            requestLayout();
+//        }
     }
 
     public Direction getCurDirection() {
@@ -93,6 +107,7 @@ public class SelectorLayout extends LinearLayout {
 
     public void setCurDirection(Direction curDirection) {
         this.curDirection = curDirection;
+        resetLayout();
     }
 
     public int getDuration() {
@@ -102,6 +117,21 @@ public class SelectorLayout extends LinearLayout {
     public void setDuration(int mDuration) {
         this.mDuration = mDuration;
     }
+
+    /**
+     * 恢复初始位置
+     */
+    private void resetLayout() {
+        int width = getRealWidth() == null ? getMeasuredWidth() : getRealWidth();
+        int height = getRealHeight() == null ? getMeasuredHeight() : getRealHeight();
+        Log.e("SelectorLayout", "width=" + width + ",height=" + height);
+        getLayoutParams().width = width;
+        getLayoutParams().height = height;
+        setTranslationX(0);
+        setTranslationY(0);
+        requestLayout();
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -156,9 +186,21 @@ public class SelectorLayout extends LinearLayout {
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width, heightMode == MeasureSpec.EXACTLY ? heightSize : height);
     }
 
-
+    /**
+     * 位移动画
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     private ValueAnimator getTranslateAnimation(float from, float to) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, from, to);
+        resetAnimation();
+        ObjectAnimator objectAnimator = null;
+        if (curDirection == Direction.VerticalDirection) {
+            objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, from, to);
+        } else {
+            objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_X, from, to);
+        }
         objectAnimator.setDuration(mDuration);
         objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -179,11 +221,47 @@ public class SelectorLayout extends LinearLayout {
                 isAnimation = true;
             }
         });
+        objectAnimator.setInterpolator(interpolator);
         return objectAnimator;
     }
 
+    private void resetAnimation() {
+        if (lastStyle != curStyle){
+            if (lastStyle == Styleable.Drawable){
+                if (!isExpandable){
+                    getLayoutParams().width = getRealWidth();
+                    getLayoutParams().height = getRealHeight();
+                    if (curDirection == Direction.VerticalDirection)
+                    setTranslationY(0);
+                    else
+                        setTranslationX(0);
+                }
+            }
+            if (lastStyle == Styleable.Expanable){
+                if (!isExpandable){
+                    if (curDirection == Direction.VerticalDirection){
+                        setTranslationY(0);
+                        getLayoutParams().height = 0;
+                    }else{
+                        setTranslationX(0);
+                        getLayoutParams().width = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 折叠动画
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     private ValueAnimator getSizeAnimation(float from, float to) {
+        resetAnimation();
         final float height = getMeasuredHeight();
+        final float width = getMeasuredWidth();
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);
         valueAnimator.setDuration(mDuration);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -191,29 +269,36 @@ public class SelectorLayout extends LinearLayout {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
                 Log.e("SelectorLayout", "value=" + value);
-                getLayoutParams().height = (int) (height + value);
+                if (curDirection == Direction.VerticalDirection) {
+                    getLayoutParams().height = (int) (height + value);
+                } else {
+                    getLayoutParams().width = (int) (width + value);
+                }
                 requestLayout();
             }
         });
+        valueAnimator.setInterpolator(interpolator);
         return valueAnimator;
     }
 
-    private int realHeight = 0;
-    private int realWidth = 0;
+    private Integer realHeight = null;
+    private Integer realWidth = null;
 
-    private int getRealHeight() {
+    private Integer getRealHeight() {
         return realHeight;
     }
 
-    private void setRealHeight(int realHeight) {
+    private void setRealHeight(Integer realHeight) {
+        if (this.realHeight == null)
         this.realHeight = realHeight;
     }
 
-    private int getRealWidth() {
+    private Integer getRealWidth() {
         return realWidth;
     }
 
-    private void setRealWidth(int realWidth) {
+    private void setRealWidth(Integer realWidth) {
+        if (this.realWidth == null)
         this.realWidth = realWidth;
     }
 
