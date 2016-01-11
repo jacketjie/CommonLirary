@@ -8,6 +8,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -22,21 +23,19 @@ public class SelectorLayout extends LinearLayout {
 
     private int mDuration;
     private static final int Default_druation = 250;
-    private static final int Default_style = 0;
-    private Styleable curStyle = Styleable.Drawable;
     private boolean isAnimation;
     private boolean isExpandable = true;
-    private Direction curDirection = Direction.VerticalDirection;
-
+    private static final int Default_style = 0;
     public enum Direction {
         VerticalDirection,
         HorizontalDirection
     }
-
     public enum Styleable {
         Expanable,
         Drawable
-    }
+        }
+    private Styleable curStyle = Styleable.Drawable;
+    private Direction curDirection = Direction.VerticalDirection;
 
     public SelectorLayout(Context context) {
         this(context, null);
@@ -156,6 +155,15 @@ public class SelectorLayout extends LinearLayout {
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width, heightMode == MeasureSpec.EXACTLY ? heightSize : height);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        return super.onSaveInstanceState();
+    }
 
     private ValueAnimator getTranslateAnimation(float from, float to) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, from, to);
@@ -163,7 +171,7 @@ public class SelectorLayout extends LinearLayout {
         objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                requestLayout();
+//                requestLayout();
             }
         });
         objectAnimator.addListener(new AnimatorListenerAdapter() {
@@ -192,7 +200,7 @@ public class SelectorLayout extends LinearLayout {
                 float value = (float) animation.getAnimatedValue();
                 Log.e("SelectorLayout", "value=" + value);
                 getLayoutParams().height = (int) (height + value);
-                requestLayout();
+//                requestLayout();
             }
         });
         return valueAnimator;
