@@ -9,7 +9,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import jacketjie.common.libray.R;
 import jacketjie.common.libray.custom.view.SelectorLayout;
@@ -21,13 +24,14 @@ import jacketjie.common.libray.others.ScreenUtils;
 public class AnimationTestActivity extends AppCompatActivity {
     private Button sizeBtn;
     private Button locaBtn;
-    private Button verticalBtn;
-    private Button horizontalBtn;
+    private RadioButton verticalBtn;
+    private RadioButton horizontalBtn;
+    private RadioGroup group;
     private ListView listView;
     private int screenWidth;
     private String[] mDatas = {"优美散文", "短篇小说", "美文日赏", "青春碎碎念", "左岸阅读", "慢文艺", "诗歌精选", "经典语录"};
     private boolean isFirst;
-    private boolean isExpand ;
+    private boolean isExpand;
     private boolean isAnimating;
 
     private SelectorLayout selectorLayout;
@@ -39,7 +43,7 @@ public class AnimationTestActivity extends AppCompatActivity {
         screenWidth = ScreenUtils.getScreenWidth(this);
         initViews();
         initData();
-setEventListener();
+        setEventListener();
 //        listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 //            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 //            @Override
@@ -53,27 +57,43 @@ setEventListener();
     }
 
     private void setEventListener() {
-        verticalBtn.setOnClickListener(new View.OnClickListener() {
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                selectorLayout.setCurDirection(SelectorLayout.Direction.VerticalDirection);
-                selectorLayout.startExpandAnimation();
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.id_vertical:
+                        selectorLayout.setCurDirection(SelectorLayout.Direction.VerticalDirection);
+                        break;
+                    case R.id.id_horizontal:
+                        selectorLayout.setCurDirection(SelectorLayout.Direction.HorizontalDirection);
+                        break;
+                }
             }
         });
-        horizontalBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectorLayout.setCurDirection(SelectorLayout.Direction.HorizontalDirection);
-                selectorLayout.startExpandAnimation();
-            }
-        });
+
+//        verticalBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                selectorLayout.startExpandAnimation();
+//            }
+//        });
+//        horizontalBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                selectorLayout.startExpandAnimation();
+//            }
+//        });
     }
 
     private void initViews() {
+        group = (RadioGroup) findViewById(R.id.id_top);
+
         sizeBtn = (Button) findViewById(R.id.id_animation);
         locaBtn = (Button) findViewById(R.id.id_location);
-        verticalBtn = (Button) findViewById(R.id.id_vertical);
-        horizontalBtn = (Button) findViewById(R.id.id_horizontal);
+        verticalBtn = (RadioButton) findViewById(R.id.id_vertical);
+        horizontalBtn = (RadioButton) findViewById(R.id.id_horizontal);
         listView = (ListView) findViewById(R.id.id_anim_list);
         selectorLayout = (SelectorLayout) findViewById(R.id.id_selector);
     }
@@ -229,7 +249,6 @@ setEventListener();
             objectAnimator.start();
         }
     }
-
 
 
 }
