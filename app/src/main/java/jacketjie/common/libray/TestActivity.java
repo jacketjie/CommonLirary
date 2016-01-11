@@ -341,7 +341,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    class MyAdapter extends CommonAdapter<Bean> {
+   public static class MyAdapter extends CommonAdapter<Bean> {
 
         public MyAdapter(Context context, List<Bean> mDatas, int itemLayoutId) {
             super(context, mDatas, itemLayoutId);
@@ -419,7 +419,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    class Bean implements Serializable {
+    public static class Bean implements Serializable {
         private String title;
         private String subTitle;
         private String status;

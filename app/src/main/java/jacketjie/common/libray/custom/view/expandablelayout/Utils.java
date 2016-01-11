@@ -62,4 +62,31 @@ public class Utils {
                 return new LinearInterpolator();
         }
     }
+
+    public static int getInterpolator(TimeInterpolator timer){
+        int style = 8;
+        if (timer instanceof AccelerateDecelerateInterpolator)
+            style = 0;
+        if (timer instanceof AccelerateInterpolator)
+            style = 1;
+        if (timer instanceof AnticipateInterpolator)
+            style = 2;
+        if (timer instanceof AnticipateOvershootInterpolator)
+            style = 3;
+        if (timer instanceof BounceInterpolator)
+            style = 4;
+        if (timer instanceof DecelerateInterpolator)
+            style = 5;
+        if (timer instanceof FastOutLinearInInterpolator)
+            style = 6;
+        if (timer instanceof FastOutSlowInInterpolator)
+            style = 7;
+        if (timer instanceof LinearInterpolator)
+            style = 8;
+        if (timer instanceof LinearOutSlowInInterpolator)
+            style = 9;
+        if (timer instanceof OvershootInterpolator)
+            style = 10;
+        return style;
+    }
 }

@@ -4,52 +4,93 @@ package jacketjie.common.libray.custom.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 
 import jacketjie.common.libray.R;
+import jacketjie.common.libray.custom.view.expandablelayout.Utils;
 
 /**
- * Created by Administrator on 2016/1/8.
+ * 可以进行收缩展开动画的LinLayout
+ * 动画的初始与结束为止取决于父控件的位置
+ *
  */
 public class SelectorLayout extends LinearLayout {
-
+    /**
+     * 默认动画时长
+     */
+    private static final int Default_druation = 220;
+    /**
+     * 动画时长
+     */
     private int mDuration;
-    private static final int Default_druation = 250;
-<<<<<<< HEAD
-    private boolean isAnimation;
-    private boolean isExpandable = true;
-    private static final int Default_style = 0;
-=======
-    private static final int Default_style = 0;
-    private boolean isAnimation;
-    private boolean isExpandable = true;
-    private Interpolator interpolator = new LinearInterpolator();
+    /**
+     * Drawable Style
+     */
+    private static final int DRAWABLE_STYLE = 0;
+    /**
+     * Expandable Style
+     */
+    private static final int EXPANDABLE_STYLE = 1;
+    /**
+     * 默认动画风格
+     */
+    private static final int Default_style = DRAWABLE_STYLE;
+    /**
+     * 当前动画风格
+     */
     private Styleable curStyle = Styleable.Drawable;
-    private Styleable lastStyle = curStyle;
-    private Direction curDirection = Direction.VerticalDirection;
+    /**
+     * 是否正在进行动画
+     */
+    private boolean isAnimation;
+    /**
+     * 是否处于展开状态
+     */
+    private boolean isExpandable = true;
+    /**
+     * 动画插值器
+     */
+    private TimeInterpolator interpolator;
 
->>>>>>> 4d40d47ee1c21190d242340aaacd835271a22837
+    /**
+     * 记录上一次的动画风格
+     */
+    private Styleable lastStyle = curStyle;
+    /**
+     * 动画的方向
+     */
+    private Direction curDirection = Direction.Top;
+
+    private boolean hadInited;
+
+
     public enum Direction {
-        VerticalDirection,
-        HorizontalDirection
+        Top,
+        Left,
+        Bottom,
+        Right
     }
+
     public enum Styleable {
         Expanable,
         Drawable
-        }
-    private Styleable curStyle = Styleable.Drawable;
-    private Direction curDirection = Direction.VerticalDirection;
+    }
+
+    /**
+     * 判断是不是展开的
+     * @return
+     */
+    public boolean isExpand(){
+        return isExpandable;
+    }
 
     public SelectorLayout(Context context) {
         this(context, null);
@@ -64,12 +105,13 @@ public class SelectorLayout extends LinearLayout {
         init(context, attrs, defStyleAttr);
     }
 
-    public Interpolator getInterpolator() {
-        return interpolator;
+    public int getInterpolatorStyle() {
+        return Utils.getInterpolator(interpolator);
     }
 
-    public void setInterpolator(Interpolator interpolator) {
-        this.interpolator = interpolator;
+
+    public void setInterpolator(int interpolatorStyle) {
+        this.interpolator = Utils.createInterpolator(interpolatorStyle);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -80,42 +122,102 @@ public class SelectorLayout extends LinearLayout {
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray ta = context.obtainStyledAttributes(
-                attrs, R.styleable.expandableLayout, defStyleAttr, 0);
+                attrs, R.styleable.SelectorLayout, defStyleAttr, 0);
         mDuration = ta.getInteger(R.styleable.SelectorLayout_duration, Default_druation);
         int style = ta.getInteger(R.styleable.SelectorLayout_style, Default_style);
         switch (style) {
-            case 0:
+            case DRAWABLE_STYLE:
+                curStyle = Styleable.Drawable;
+                break;
+            case EXPANDABLE_STYLE:
                 curStyle = Styleable.Expanable;
                 break;
+        }
+        Integer interpolatorStyle = ta.getInteger(R.styleable.SelectorLayout_sl_interpolator, 8);
+        interpolator = Utils.createInterpolator(interpolatorStyle);
+        Integer directionStyle = ta.getInteger(R.styleable.SelectorLayout_direction, 0);
+        switch (directionStyle) {
+            case 0:
+                curDirection = Direction.Top;
+                break;
             case 1:
-                curStyle = Styleable.Drawable;
+                curDirection = Direction.Left;
+                break;
+            case 2:
+                curDirection = Direction.Bottom;
+                break;
+            case 3:
+                curDirection = Direction.Right;
                 break;
         }
         ta.recycle();
     }
 
-    public Styleable getCurStyle() {
+    public Styleable getAnimationStyle() {
         return curStyle;
     }
 
-    public void setCurStyle(Styleable curStyle) {
+    public void setAnimationStyle(Styleable curStyle) {
         this.lastStyle = this.curStyle;
         this.curStyle = curStyle;
+
 //        if (curStyle == Styleable.Drawable) {
 //            setTranslationY(0);
 //        } else if (curStyle == Styleable.Expanable) {
 //            getLayoutParams().height = getRealHeight();
 //            requestLayout();
 //        }
+        resetAnimationStyle();
+
     }
 
-    public Direction getCurDirection() {
+    /**
+     * 重置动画
+     */
+    private void resetAnimationStyle() {
+        if (curStyle == lastStyle)
+            return;
+        switch (getStyle(lastStyle)) {
+            case DRAWABLE_STYLE:
+                if (!isExpand()) {
+                    if (getDirectionIndex() == 0) {
+                        setTranslationY(0);
+                        getLayoutParams().height = 0;
+                        requestLayout();
+                    }
+                    if(getDirectionIndex() == 1){
+                        setTranslationX(0);
+                        getLayoutParams().width = 0;
+                        requestLayout();
+                    }
+                }
+                break;
+            case EXPANDABLE_STYLE:
+                if (!isExpand()) {
+                    if (getDirectionIndex() == 0) {
+                        getLayoutParams().height = getRealHeight();
+                        requestLayout();
+                        setTranslationY(-getRealHeight());
+                    }
+                    if (getDirectionIndex() == 1)  {
+                        getLayoutParams().width = getRealWidth();
+                        requestLayout();
+                        setTranslationX(-getRealWidth());
+                    }
+                }
+                break;
+        }
+    }
+
+    public Direction getAnimationDirection() {
         return curDirection;
     }
 
-    public void setCurDirection(Direction curDirection) {
-        this.curDirection = curDirection;
-        resetLayout();
+    public void setAnimationDirection(Direction curDirection) {
+        if (getAnimationDirection() != curDirection) {
+            resetAnimationLayout();
+            this.curDirection = curDirection;
+        }
     }
 
     public int getDuration() {
@@ -127,17 +229,43 @@ public class SelectorLayout extends LinearLayout {
     }
 
     /**
-     * 恢复初始位置
+     * 切换方向，改变状态
      */
-    private void resetLayout() {
-        int width = getRealWidth() == null ? getMeasuredWidth() : getRealWidth();
-        int height = getRealHeight() == null ? getMeasuredHeight() : getRealHeight();
-        Log.e("SelectorLayout", "width=" + width + ",height=" + height);
-        getLayoutParams().width = width;
-        getLayoutParams().height = height;
-        setTranslationX(0);
-        setTranslationY(0);
-        requestLayout();
+    private void resetAnimationLayout() {
+        if (getDirectionIndex() == 0) {
+            switch (getStyle(curStyle)) {
+                case DRAWABLE_STYLE:
+                    if (!isExpand()) {
+                        setTranslationX(-getRealWidth());
+                        setTranslationY(0);
+                    }
+                    break;
+                case EXPANDABLE_STYLE:
+                    if (!isExpand()) {
+                        getLayoutParams().width = 0;
+                        getLayoutParams().height = getRealHeight();
+                        requestLayout();
+                    }
+                    break;
+            }
+        }
+        if (getDirectionIndex() == 1) {
+            switch (getStyle(curStyle)) {
+                case DRAWABLE_STYLE:
+                    if (!isExpand()) {
+                        setTranslationY(-getRealHeight());
+                        setTranslationX(0);
+                    }
+                    break;
+                case EXPANDABLE_STYLE:
+                    if (!isExpand()) {
+                        getLayoutParams().width = getRealWidth();
+                        getLayoutParams().height = 0;
+                        requestLayout();
+                    }
+                    break;
+            }
+        }
     }
 
 
@@ -153,8 +281,8 @@ public class SelectorLayout extends LinearLayout {
 
         int childMeasuredWidth = 0;
         int childMeasuredHeight = 0;
-        int childWidthMeasureSpec = 0;
-        int childHeightMeasureSpec = 0;
+//        int childWidthMeasureSpec = 0;
+//        int childHeightMeasureSpec = 0;
         // 修改了系统自动测量的子View的大小
         for (int i = 0; i < childCount; i++) {
             View childView = getChildAt(i);
@@ -171,7 +299,6 @@ public class SelectorLayout extends LinearLayout {
         }
         // 获取每个子View测量所得的宽和高
         for (int i = 0; i < childCount; i++) {
-
             View childView = getChildAt(i);
             MarginLayoutParams mlp = (MarginLayoutParams) childView.getLayoutParams();
             int childWidth = childView.getMeasuredWidth() + mlp.leftMargin + mlp.rightMargin;
@@ -192,120 +319,82 @@ public class SelectorLayout extends LinearLayout {
         height += getPaddingTop() + getPaddingBottom() + childMeasuredHeight;
 //        Log.e("SelectorLayout", "width=" + width + ",height=" + height);
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width, heightMode == MeasureSpec.EXACTLY ? heightSize : height);
+        setRealHeight(getMeasuredHeight());
+        setRealWidth(getMeasuredWidth());
+        moveToHidden();
     }
 
-<<<<<<< HEAD
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(state);
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        return super.onSaveInstanceState();
-    }
-
-=======
     /**
-     * 位移动画
-     *
-     * @param from
-     * @param to
-     * @return
+     * 初始是隐藏
      */
->>>>>>> 4d40d47ee1c21190d242340aaacd835271a22837
-    private ValueAnimator getTranslateAnimation(float from, float to) {
-        resetAnimation();
-        ObjectAnimator objectAnimator = null;
-        if (curDirection == Direction.VerticalDirection) {
-            objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, from, to);
-        } else {
-            objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_X, from, to);
-        }
-        objectAnimator.setDuration(mDuration);
-        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-//                requestLayout();
+    private void moveToHidden() {
+        if (!hadInited) {
+            if (getRealWidth() == null || getRealHeight() == null) {
+                return;
             }
-        });
-        objectAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                isAnimation = false;
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                isAnimation = true;
-            }
-        });
-        objectAnimator.setInterpolator(interpolator);
-        return objectAnimator;
-    }
-
-    private void resetAnimation() {
-        if (lastStyle != curStyle){
-            if (lastStyle == Styleable.Drawable){
-                if (!isExpandable){
-                    getLayoutParams().width = getRealWidth();
-                    getLayoutParams().height = getRealHeight();
-                    if (curDirection == Direction.VerticalDirection)
-                    setTranslationY(0);
-                    else
-                        setTranslationX(0);
-                }
-            }
-            if (lastStyle == Styleable.Expanable){
-                if (!isExpandable){
-                    if (curDirection == Direction.VerticalDirection){
-                        setTranslationY(0);
+            if (getDirectionIndex() == 0) {
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        setTranslationY(-getRealHeight());
+                        break;
+                    case EXPANDABLE_STYLE:
                         getLayoutParams().height = 0;
-                    }else{
-                        setTranslationX(0);
-                        getLayoutParams().width = 0;
-                    }
+                        requestLayout();
+                        break;
                 }
             }
+            if (getDirectionIndex() == 1) {
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        setTranslationX(0);
+                        break;
+                    case EXPANDABLE_STYLE:
+                        getLayoutParams().width = 0;
+                        requestLayout();
+                        break;
+                }
+            }
+            isExpandable = false;
+            hadInited = true;
         }
     }
 
     /**
-     * 折叠动画
+     * 判断动画方向
      *
-     * @param from
-     * @param to
+     * @return true:垂直方向的动画
+     */
+    public int getDirectionIndex() {
+        int index = 0;
+        if (curDirection == Direction.Top){
+            index = 0;
+        }
+        if (curDirection == Direction.Left){
+            index = 1;
+        }
+        if (curDirection == Direction.Bottom){
+            index = 2;
+        }
+        if (curDirection == Direction.Right){
+            index = 3;
+        }
+        return index;
+    }
+
+    /**
+     * 判断动画风格
+     *
      * @return
      */
-    private ValueAnimator getSizeAnimation(float from, float to) {
-        resetAnimation();
-        final float height = getMeasuredHeight();
-        final float width = getMeasuredWidth();
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(from, to);
-        valueAnimator.setDuration(mDuration);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float) animation.getAnimatedValue();
-                Log.e("SelectorLayout", "value=" + value);
-<<<<<<< HEAD
-                getLayoutParams().height = (int) (height + value);
-//                requestLayout();
-=======
-                if (curDirection == Direction.VerticalDirection) {
-                    getLayoutParams().height = (int) (height + value);
-                } else {
-                    getLayoutParams().width = (int) (width + value);
-                }
-                requestLayout();
->>>>>>> 4d40d47ee1c21190d242340aaacd835271a22837
-            }
-        });
-        valueAnimator.setInterpolator(interpolator);
-        return valueAnimator;
+    public int getStyle(Styleable style) {
+        int index = 0;
+        if (style == Styleable.Drawable)
+            index = 0;
+        if (style == Styleable.Expanable)
+            index = 1;
+        return index;
     }
+
 
     private Integer realHeight = null;
     private Integer realWidth = null;
@@ -316,7 +405,7 @@ public class SelectorLayout extends LinearLayout {
 
     private void setRealHeight(Integer realHeight) {
         if (this.realHeight == null)
-        this.realHeight = realHeight;
+            this.realHeight = realHeight;
     }
 
     private Integer getRealWidth() {
@@ -325,52 +414,144 @@ public class SelectorLayout extends LinearLayout {
 
     private void setRealWidth(Integer realWidth) {
         if (this.realWidth == null)
-        this.realWidth = realWidth;
+            this.realWidth = realWidth;
     }
 
-
-    public void startExpandAnimation() {
-        if (isAnimation)
-            return;
-        if (isExpandable) {
-            setRealHeight(getMeasuredHeight());
-            setRealWidth(getMeasuredWidth());
-            if (curDirection == Direction.VerticalDirection) {
-                if (curStyle == Styleable.Drawable) {
-                    getTranslateAnimation(0, -getRealHeight()).start();
-                } else if (curStyle == Styleable.Expanable) {
-                    getSizeAnimation(0, -getRealHeight()).start();
-                }
-            } else if (curDirection == Direction.HorizontalDirection) {
-                if (curStyle == Styleable.Drawable) {
-                    getTranslateAnimation(0, -getRealWidth()).start();
-                } else if (curStyle == Styleable.Expanable) {
-                    getSizeAnimation(0, -getRealWidth()).start();
-                }
-
-            }
-            isExpandable = false;
-        } else {
-            if (curDirection == Direction.VerticalDirection) {
-
-                if (curStyle == Styleable.Drawable) {
-                    getTranslateAnimation(-getRealHeight(), 0).start();
-                } else if (curStyle == Styleable.Expanable) {
-                    getSizeAnimation(0, getRealHeight()).start();
-                }
-            } else if (curDirection == Direction.HorizontalDirection) {
-                if (curStyle == Styleable.Drawable) {
-                    getTranslateAnimation(-getRealWidth(), 0).start();
-                } else if (curStyle == Styleable.Expanable) {
-                    getSizeAnimation(0, getRealWidth()).start();
-                }
-            }
-            isExpandable = true;
-        }
-    }
-
+    /**
+     * 判断布局方向
+     *
+     * @return true:vertical布局
+     */
     private boolean isVertical() {
         return getOrientation() == VERTICAL;
+    }
+
+    /**
+     * 设置Expandable动画
+     *
+     * @param startPos
+     * @param endPos
+     * @return
+     */
+    private ValueAnimator setExpandableAnimation(float startPos, float endPos) {
+//        Log.d("SelectorLayout", "mDuration=" + mDuration);
+        ValueAnimator valueAnimator = null;
+        valueAnimator = ValueAnimator.ofFloat(startPos, endPos);
+        valueAnimator.setInterpolator(interpolator);
+        valueAnimator.setDuration(mDuration);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                if (getDirectionIndex() == 0) {
+                    getLayoutParams().height = (int) value;
+                }
+                if (getDirectionIndex() == 1) {
+                    getLayoutParams().width = (int) value;
+                }
+                requestLayout();
+//                Log.d("SelectorLayout", "width=" + getLayoutParams().width + ",height=" + getLayoutParams().height);
+            }
+        });
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                isAnimation = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                isAnimation = false;
+            }
+        });
+        return valueAnimator;
+    }
+
+    /**
+     * 设置Drawable动画
+     *
+     * @param startPos
+     * @param endPos
+     * @return
+     */
+    private ValueAnimator setDrawableAnimation(float startPos, float endPos) {
+        ObjectAnimator objectAnimator = null;
+        if (getDirectionIndex() == 0) {
+            objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, startPos, endPos);
+        }
+        if (getDirectionIndex() == 1) {
+            objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_X, startPos, endPos);
+        }
+        objectAnimator.setInterpolator(interpolator);
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                isAnimation = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                isAnimation = false;
+            }
+        });
+        return objectAnimator;
+    }
+
+    /**
+     * 展开或者收缩动画
+     */
+    public void displayOrHidden() {
+        if (isAnimation)
+            return;
+        if (getDirectionIndex() == 0) {
+            switch (getStyle(curStyle)) {
+                case DRAWABLE_STYLE:
+                    if (isExpand()) {
+                        setDrawableAnimation(0, -getRealHeight()).start();
+                        isExpandable = false;
+                    } else {
+                        setDrawableAnimation(-getRealHeight(), 0).start();
+                        isExpandable = true;
+                    }
+                    break;
+                case EXPANDABLE_STYLE:
+                    if (isExpand()) {
+                        setExpandableAnimation(getRealHeight(), 0).start();
+                        isExpandable = false;
+                    } else {
+                        setExpandableAnimation(0, getRealHeight()).start();
+                        isExpandable = true;
+                    }
+                    break;
+
+            }
+        }
+        if (getDirectionIndex() == 1) {
+            switch (getStyle(curStyle)) {
+                case DRAWABLE_STYLE:
+                    if (isExpand()) {
+                        setDrawableAnimation(0, -getRealWidth()).start();
+                        isExpandable = false;
+                    } else {
+                        setDrawableAnimation(-getRealWidth(), 0).start();
+                        isExpandable = true;
+                    }
+                    break;
+                case EXPANDABLE_STYLE:
+                    if (isExpand()) {
+                        setExpandableAnimation(getRealWidth(), 0).start();
+                        isExpandable = false;
+                    } else {
+                        setExpandableAnimation(0, getRealWidth()).start();
+                        isExpandable = true;
+                    }
+                    break;
+            }
+        }
     }
 
 }
