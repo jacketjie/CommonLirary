@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:divider="#f2f2f2"
             android:dividerHeight="@dimen/x8"
-            android:padding="@dimen/x8" />
+             />
 
         <ImageView
             android:id="@+id/id_bg"
@@ -117,7 +117,7 @@
                 android:id="@+id/id_gridview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/main_bg_color"
+                android:background="#f5f5f5"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:horizontalSpacing="10dp"

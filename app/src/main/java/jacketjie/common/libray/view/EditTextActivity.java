@@ -5,10 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.io.UnsupportedEncodingException;
 
+import de.greenrobot.event.EventBus;
 import jacketjie.common.libray.R;
 
 /**
@@ -23,11 +26,14 @@ public class EditTextActivity extends AppCompatActivity {
      * 编码格式
      */
     private String encoding = "GBK";
+
+    private Button btn;
+    private Button btn1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_layout);
-        EditText editText = (EditText) findViewById(R.id.id_edit);
+        final EditText editText = (EditText) findViewById(R.id.id_edit);
         editText.setFilters(new InputFilter[]{
                 new InputFilter() {
                     @Override
@@ -51,6 +57,42 @@ public class EditTextActivity extends AppCompatActivity {
                         }
                     }
                 }
+        });
+
+
+        btn = (Button) findViewById(R.id.id_btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String result = editText.getText().toString().trim();
+                String[] len = result.split("\\*");
+                if (len != null && len.length == 2) {
+                    int first = Integer.valueOf(len[0]);
+                    int second = Integer.valueOf(len[1]);
+                    EventMessage message = new EventMessage();
+                    message.setCount(first % 8);
+                    if (second > 5) {
+                        message.setIsExpandable(true);
+                    }
+                    EventBus.getDefault().post(message);
+                    onBackPressed();
+                }
+            }
+        });
+        btn1 = (Button) findViewById(R.id.id_btn1);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String result = editText.getText().toString().trim();
+                String[]len= result.split("\\*");
+                if (len !=null && len.length == 2){
+                    int first = Integer.valueOf(len[0]);
+                    int second = Integer.valueOf(len[1]);
+                    Integer o = first % 4;
+                    EventBus.getDefault().post(o);
+                    onBackPressed();
+                }
+            }
         });
     }
 }

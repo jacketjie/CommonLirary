@@ -10,8 +10,9 @@
     <Button
         android:id="@+id/grid_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/grid_item_selector"
+        android:layout_height="36dp"
+        android:background="@drawable/grid_item_default"
         android:focusable="false"
+        android:textColor="#333333"
         android:text="123" />
 </LinearLayout>

@@ -190,6 +190,16 @@ public class SelectorLayout extends LinearLayout {
                         getLayoutParams().width = 0;
                         requestLayout();
                     }
+                    if (getDirectionIndex() == 2) {
+                        setTranslationY(getRealHeight());
+                        getLayoutParams().height = 0;
+                        requestLayout();
+                    }
+                    if(getDirectionIndex() == 3){
+                        setTranslationX(getRealWidth());
+                        getLayoutParams().width = 0;
+                        requestLayout();
+                    }
                 }
                 break;
             case EXPANDABLE_STYLE:
@@ -204,6 +214,16 @@ public class SelectorLayout extends LinearLayout {
                         requestLayout();
                         setTranslationX(-getRealWidth());
                     }
+                    if (getDirectionIndex() == 2) {
+                        getLayoutParams().height = getRealHeight();
+                        requestLayout();
+                        setTranslationY(getRealHeight());
+                    }
+                    if (getDirectionIndex() == 3)  {
+                        getLayoutParams().width = getRealWidth();
+                        requestLayout();
+                        setTranslationX(getRealWidth());
+                    }
                 }
                 break;
         }
@@ -215,8 +235,9 @@ public class SelectorLayout extends LinearLayout {
 
     public void setAnimationDirection(Direction curDirection) {
         if (getAnimationDirection() != curDirection) {
-            resetAnimationLayout();
+            Direction lastDirection = this.curDirection;
             this.curDirection = curDirection;
+            resetAnimationLayout(lastDirection);
         }
     }
 
@@ -231,39 +252,239 @@ public class SelectorLayout extends LinearLayout {
     /**
      * 切换方向，改变状态
      */
-    private void resetAnimationLayout() {
-        if (getDirectionIndex() == 0) {
-            switch (getStyle(curStyle)) {
-                case DRAWABLE_STYLE:
-                    if (!isExpand()) {
-                        setTranslationX(-getRealWidth());
-                        setTranslationY(0);
-                    }
-                    break;
-                case EXPANDABLE_STYLE:
-                    if (!isExpand()) {
-                        getLayoutParams().width = 0;
-                        getLayoutParams().height = getRealHeight();
-                        requestLayout();
-                    }
-                    break;
+    private void resetAnimationLayout(Direction lastDirection) {
+        if (Direction.Top == curDirection) {
+            //Left-->Top
+            if (Direction.Left == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationX(0);
+                            setTranslationY(-getRealHeight());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = getRealWidth();
+                            getLayoutParams().height = 0;
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+            //Bottom-->Top
+            if (Direction.Bottom == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationY(-getRealHeight());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+//                            getLayoutParams().width = 0;
+                            getLayoutParams().height = 0;
+                            setTranslationY(0);
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+            //Right-->Top
+            if (Direction.Right == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationX(0);
+                            setTranslationY(-getRealHeight());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = getRealWidth();
+                            getLayoutParams().height = 0;
+                            setTranslationX(0);
+                            requestLayout();
+                        }
+                        break;
+                }
             }
         }
-        if (getDirectionIndex() == 1) {
-            switch (getStyle(curStyle)) {
-                case DRAWABLE_STYLE:
-                    if (!isExpand()) {
-                        setTranslationY(-getRealHeight());
-                        setTranslationX(0);
-                    }
-                    break;
-                case EXPANDABLE_STYLE:
-                    if (!isExpand()) {
-                        getLayoutParams().width = getRealWidth();
-                        getLayoutParams().height = 0;
-                        requestLayout();
-                    }
-                    break;
+        if (Direction.Left == curDirection) {
+            //Top-->Left
+            if (Direction.Top == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationY(0);
+                            setTranslationX(-getRealWidth());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = 0;
+                            getLayoutParams().height = getRealHeight();
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+            //Bottom-->Left
+            if (Direction.Bottom == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationY(0);
+                            setTranslationX(-getRealWidth());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = 0;
+                            getLayoutParams().height = getRealHeight();
+                            setTranslationY(0);
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+            //Right-->Left
+            if (Direction.Right == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationX(-getRealWidth());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = 0;
+                            getLayoutParams().height = getRealHeight();
+                            setTranslationX(0);
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+        }
+        if (Direction.Bottom == curDirection) {
+            //Left-->Bottom
+            if (Direction.Left == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationX(0);
+                            setTranslationY(-getRealHeight());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = getRealWidth();
+                            getLayoutParams().height = 0;
+                            setTranslationY(getRealHeight());
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+            //Top-->Bottom
+            if (Direction.Top == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationY(getRealHeight());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = getRealWidth();
+                            getLayoutParams().height = 0;
+                            setTranslationY(getRealHeight());
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+            //Right-->Bottom
+            if (Direction.Right == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationX(0);
+                            setTranslationY(getRealHeight());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = getRealWidth();
+                            getLayoutParams().height = 0;
+                            setTranslationX(0);
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+        }
+        if (Direction.Right == curDirection) {
+            //Top-->Right
+            if (Direction.Top == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationY(0);
+                            setTranslationX(getRealWidth());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = 0;
+                            getLayoutParams().height = getRealHeight();
+                            setTranslationY(0);
+                            setTranslationX(getRealWidth());
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+            //Left-->Right
+            if (Direction.Left == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationY(0);
+                            setTranslationX(getRealWidth());
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = 0;
+                            getLayoutParams().height = getRealHeight();
+                            setTranslationX(getRealWidth());
+                            setTranslationY(0);
+                            requestLayout();
+                        }
+                        break;
+                }
+            }
+            //Bottom-->Right
+            if (Direction.Bottom == lastDirection){
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        if (!isExpand()) {
+                            setTranslationX(getRealWidth());
+                            setTranslationY(0);
+                        }
+                        break;
+                    case EXPANDABLE_STYLE:
+                        if (!isExpand()) {
+                            getLayoutParams().width = 0;
+                            getLayoutParams().height = getRealHeight();
+                            setTranslationX(getRealWidth());
+                            setTranslationY(0);
+                            requestLayout();
+                        }
+                        break;
+                }
             }
         }
     }
@@ -350,6 +571,30 @@ public class SelectorLayout extends LinearLayout {
                         break;
                     case EXPANDABLE_STYLE:
                         getLayoutParams().width = 0;
+                        requestLayout();
+                        break;
+                }
+            }
+            if (getDirectionIndex() == 2) {
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        setTranslationY(getRealHeight());
+                        break;
+                    case EXPANDABLE_STYLE:
+                        getLayoutParams().height = 0;
+                        setTranslationY(getRealHeight());
+                        requestLayout();
+                        break;
+                }
+            }
+            if (getDirectionIndex() == 3) {
+                switch (getStyle(curStyle)) {
+                    case DRAWABLE_STYLE:
+                        setTranslationX(getRealHeight());
+                        break;
+                    case EXPANDABLE_STYLE:
+                        getLayoutParams().width = 0;
+                        setTranslationX(getRealWidth());
                         requestLayout();
                         break;
                 }
@@ -458,12 +703,16 @@ public class SelectorLayout extends LinearLayout {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 isAnimation = true;
+                setVisibility(VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 isAnimation = false;
+                if (!isExpandable){
+                    setVisibility(GONE);
+                }
             }
         });
         return valueAnimator;
@@ -478,10 +727,10 @@ public class SelectorLayout extends LinearLayout {
      */
     private ValueAnimator setDrawableAnimation(float startPos, float endPos) {
         ObjectAnimator objectAnimator = null;
-        if (getDirectionIndex() == 0) {
+        if (getDirectionIndex() == 0 || getDirectionIndex() == 2) {
             objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_Y, startPos, endPos);
         }
-        if (getDirectionIndex() == 1) {
+        if (getDirectionIndex() == 1 || getDirectionIndex() == 3) {
             objectAnimator = ObjectAnimator.ofFloat(this, View.TRANSLATION_X, startPos, endPos);
         }
         objectAnimator.setInterpolator(interpolator);
@@ -490,15 +739,63 @@ public class SelectorLayout extends LinearLayout {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 isAnimation = true;
+                setVisibility(VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 isAnimation = false;
+                if (!isExpandable){
+                    setVisibility(GONE);
+                }
             }
         });
         return objectAnimator;
+    }
+
+
+    private ValueAnimator setExpandableBottomOrRightAnimation(float startPos, float endPos){
+        ValueAnimator valueAnimator = null;
+        valueAnimator =  ValueAnimator.ofFloat(startPos,endPos);
+        valueAnimator.setDuration(mDuration);
+        valueAnimator.setInterpolator(interpolator);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                if (getDirectionIndex() == 2){
+                    getLayoutParams().height = (int) value;
+                    setTranslationY(getRealHeight() - value);
+                    requestLayout();
+                }
+                if (getDirectionIndex() == 3){
+                    getLayoutParams().width = (int) value;
+                    setTranslationX(getRealWidth() - value);
+                    requestLayout();
+                }
+
+            }
+        });
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                isAnimation = true;
+                setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                isAnimation = false;
+                if (!isExpandable){
+                    setVisibility(GONE);
+                }
+            }
+        });
+
+        return valueAnimator;
     }
 
     /**
@@ -547,6 +844,50 @@ public class SelectorLayout extends LinearLayout {
                         isExpandable = false;
                     } else {
                         setExpandableAnimation(0, getRealWidth()).start();
+                        isExpandable = true;
+                    }
+                    break;
+            }
+        }
+        if (getDirectionIndex() == 2){
+            switch (getStyle(curStyle)){
+                case DRAWABLE_STYLE:
+                    if (isExpandable){
+                        setDrawableAnimation(0,getRealHeight()).start();
+                        isExpandable = false;
+                    }else{
+                        setDrawableAnimation(getRealHeight(),0).start();
+                        isExpandable = true;
+                    }
+                    break;
+                case EXPANDABLE_STYLE:
+                    if (isExpandable){
+                        setExpandableBottomOrRightAnimation(getRealHeight(), 0).start();
+                        isExpandable = false;
+                    }else {
+                        setExpandableBottomOrRightAnimation(0,getRealHeight()).start();
+                        isExpandable = true;
+                    }
+                    break;
+            }
+        }
+        if (getDirectionIndex() == 3){
+            switch (getStyle(curStyle)){
+                case DRAWABLE_STYLE:
+                    if (isExpandable){
+                        setDrawableAnimation(0,getRealWidth()).start();
+                        isExpandable = false;
+                    }else{
+                        setDrawableAnimation(getRealWidth(),0).start();
+                        isExpandable = true;
+                    }
+                    break;
+                case EXPANDABLE_STYLE:
+                    if (isExpandable){
+                        setExpandableBottomOrRightAnimation(getRealWidth(),0).start();
+                        isExpandable = false;
+                    }else {
+                        setExpandableBottomOrRightAnimation(0,getRealWidth()).start();
                         isExpandable = true;
                     }
                     break;

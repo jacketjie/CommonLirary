@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import jacketjie.common.libray.R;
 import jacketjie.common.libray.TestActivity;
 import jacketjie.common.libray.custom.view.SelectorLayout;
@@ -55,25 +55,23 @@ public class AnimationTestActivity extends AppCompatActivity {
     private SelectorLayout selectorLayout;
     private GridView gridView;
     private ImageView bg;
+    private int selectedPos;
+    private GridViewAdapter gridViewAdapter;
+    private RadioButton top;
+    private RadioButton left;
+    private RadioButton bottom;
+    private RadioButton right;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.library_layout);
         screenWidth = ScreenUtils.getScreenWidth(this);
+        EventBus.getDefault().register(this);
+
         initViews();
         initData();
         setEventListener();
-//        listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//            @Override
-//            public void onGlobalLayout() {
-//                int height = ScreenUtils.measure(listView)[1];
-//                Log.e("onGlobalLayout", "height=" + height);
-//                listView.setTranslationY(-height);
-//                listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//            }
-//        });
     }
 
     private void initViews() {
@@ -91,23 +89,25 @@ public class AnimationTestActivity extends AppCompatActivity {
         selectorLayout = (SelectorLayout) findViewById(R.id.id_selector);
         gridView = (GridView) findViewById(R.id.id_gridview);
 
-        RadioButton vertical = (RadioButton) findViewById(R.id.id_vertical);
-        RadioButton horizontal = (RadioButton) findViewById(R.id.id_horizontal);
+        top = (RadioButton) findViewById(R.id.id_vertical);
+        left = (RadioButton) findViewById(R.id.id_horizontal);
+        bottom = (RadioButton) findViewById(R.id.id_bottom);
+        right = (RadioButton) findViewById(R.id.id_right);
         listView = (ListView) findViewById(R.id.id_listview);
 
         bg = (ImageView) findViewById(R.id.id_bg);
-        if (selectorLayout.getDirectionIndex() == 0){
-            vertical.setChecked(true);
+        if (selectorLayout.getDirectionIndex() == 0) {
+            top.setChecked(true);
         }
-        if (selectorLayout.getDirectionIndex() == 1){
-            horizontal.setChecked(true);
+        if (selectorLayout.getDirectionIndex() == 1) {
+            left.setChecked(true);
         }
 
     }
 
     private void initData() {
 
-        GridViewAdapter gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
+        gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
         gridView.setAdapter(gridViewAdapter);
 
         List<TestActivity.Bean> mContents = new ArrayList<TestActivity.Bean>();
@@ -139,23 +139,15 @@ public class AnimationTestActivity extends AppCompatActivity {
                         selectorLayout.setAnimationDirection(SelectorLayout.Direction.Left);
                         break;
                     case R.id.id_bottom:
-//                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Bottom);
+                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Bottom);
                         break;
                     case R.id.id_right:
-//                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Right);
+                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Right);
                         break;
                 }
             }
         });
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(),EditTextActivity.class);
-                startActivity(intent);
-
-            }
-        });
 
         expandableBtn.setOnClickListener(new View.OnClickListener() {
             int listViewHeight;
@@ -174,8 +166,47 @@ public class AnimationTestActivity extends AppCompatActivity {
                 displayOrHidden();
             }
         });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), EditTextActivity.class);
+                startActivity(intent);
+            }
+        });
     }
-    private void setBgAnimation(int duration, final int startAlpha, final int endAlpaha){
+
+    public void onEventMainThread(EventMessage message){
+        if (message.isExpandable()){
+            selectedPos = message.getCount();
+            gridViewAdapter.notifyDataSetChanged();
+            selectorLayout.displayOrHidden();
+        }
+    }
+    public void onEventMainThread(Integer loa){
+        switch (loa){
+            case 0:
+                top.setChecked(true);
+                break;
+            case 1:
+                left.setChecked(true);
+
+                break;
+            case 2:
+                bottom.setChecked(true);
+
+                break;
+            case 3:
+                right.setChecked(true);
+
+                break;
+            default:
+                new Exception("arrayIndexOutOfBoundsException");
+                break;
+        }
+    }
+
+    private void setBgAnimation(int duration, final int startAlpha, final int endAlpaha) {
         ValueAnimator valueAnimator = ValueAnimator.ofInt(startAlpha, endAlpaha);
         valueAnimator.setDuration(duration);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -184,7 +215,7 @@ public class AnimationTestActivity extends AppCompatActivity {
                 int value = (Integer) animation.getAnimatedValue();
                 String alpha = Integer.toHexString(value);
                 String color = String.format("#%s000000", alpha.length() < 2 ? String.format("0%s", alpha) : alpha);
-                Log.d("SelectorLayout", "color:" + color);
+//                Log.d("SelectorLayout", "color:" + color);
                 bg.setBackgroundColor(Color.parseColor(color));
             }
         });
@@ -192,7 +223,7 @@ public class AnimationTestActivity extends AppCompatActivity {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                if (startAlpha == 0){
+                if (startAlpha == 0) {
                     bg.setVisibility(View.VISIBLE);
                 }
             }
@@ -200,7 +231,7 @@ public class AnimationTestActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                if (endAlpaha == 0){
+                if (endAlpaha == 0) {
                     bg.setVisibility(View.GONE);
                 }
             }
@@ -211,12 +242,12 @@ public class AnimationTestActivity extends AppCompatActivity {
     /**
      * 设置动画
      */
-    private void displayOrHidden(){
+    private void displayOrHidden() {
         selectorLayout.displayOrHidden();
         if (selectorLayout.isExpand()) {
-            setBgAnimation(selectorLayout.getDuration(), 0, 128);
+            setBgAnimation(selectorLayout.getDuration(), 0, 104);
         } else {
-            setBgAnimation(selectorLayout.getDuration(), 128, 0);
+            setBgAnimation(selectorLayout.getDuration(), 104, 0);
         }
     }
 
@@ -246,7 +277,7 @@ public class AnimationTestActivity extends AppCompatActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
+            final ViewHolder holder;
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.grid_item, parent, false);
                 holder = new ViewHolder();
@@ -260,9 +291,20 @@ public class AnimationTestActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     displayOrHidden();
-                    Toast.makeText(getApplicationContext(),mDatas.get(position),Toast.LENGTH_SHORT).show();
+                    selectedPos = position;
+                    holder.item.setBackgroundResource(R.drawable.grid_item_selected);
+                    holder.item.setTextColor(Color.WHITE);
+                    Toast.makeText(getApplicationContext(), mDatas.get(position), Toast.LENGTH_SHORT).show();
+                    GridViewAdapter.this.notifyDataSetChanged();
                 }
             });
+            if (selectedPos == position) {
+                holder.item.setTextColor(Color.WHITE);
+                holder.item.setBackgroundResource(R.drawable.grid_item_selected);
+            } else {
+                holder.item.setBackgroundResource(R.drawable.grid_item_default);
+                holder.item.setTextColor(Color.parseColor("#333333"));
+            }
             return convertView;
         }
 
@@ -273,19 +315,19 @@ public class AnimationTestActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()){
+        switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 int eX = (int) ev.getX();
                 int eY = (int) ev.getY();
                 Rect rect = new Rect();
                 selectorLayout.getLocalVisibleRect(rect);
-                int[]position = new int[2];
+                int[] position = new int[2];
                 selectorLayout.getLocationOnScreen(position);
                 rect.left = rect.left + position[0];
                 rect.right = rect.right + position[0];
                 rect.top = rect.top + position[1];
                 rect.bottom = rect.bottom + position[1];
-                if (selectorLayout.isExpand() && eY > rect.bottom){
+                if (selectorLayout.isExpand() && eY > rect.bottom) {
                     displayOrHidden();
                     return true;
                 }
@@ -300,8 +342,8 @@ public class AnimationTestActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.animation_menu,menu);
-        switch (selectorLayout.getInterpolatorStyle()){
+        getMenuInflater().inflate(R.menu.animation_menu, menu);
+        switch (selectorLayout.getInterpolatorStyle()) {
             case Utils.ACCELERATE_DECELERATE_INTERPOLATOR:
                 menu.findItem(R.id.action_accelerateDecelerate).setChecked(true);
                 break;
@@ -338,7 +380,7 @@ public class AnimationTestActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_accelerateDecelerate:
                 selectorLayout.setInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR);
                 break;
@@ -377,6 +419,12 @@ public class AnimationTestActivity extends AppCompatActivity {
         }
         item.setChecked(true);
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }
 
