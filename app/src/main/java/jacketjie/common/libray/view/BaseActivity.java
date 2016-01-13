@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import jacketjie.common.libray.R;
-import jacketjie.common.libray.custom.view.AsTimeDialogView;
+import jacketjie.common.libray.custom.view.dialog.AsTimeDialogView;
 
 /**
  * Created by Administrator on 2015/12/30.

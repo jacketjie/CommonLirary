@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.view.ViewGroup;
 
-import jacketjie.common.libray.custom.view.AsTimeDialogLayout;
+import jacketjie.common.libray.custom.view.dialog.AsTimeDialogLayout;
 
 
 /**

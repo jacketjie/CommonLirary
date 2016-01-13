@@ -1,4 +1,4 @@
-package jacketjie.common.libray.custom.view;
+package jacketjie.common.libray.custom.view.dialog;
 
 import android.content.Context;
 import android.util.AttributeSet;

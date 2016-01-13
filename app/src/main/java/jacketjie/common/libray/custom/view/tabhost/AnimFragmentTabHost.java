@@ -1,4 +1,4 @@
-package jacketjie.common.libray.custom.view;
+package jacketjie.common.libray.custom.view.tabhost;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -1,4 +1,4 @@
-package jacketjie.common.libray.custom.view;
+package jacketjie.common.libray.custom.view.edittext;
 
 import android.annotation.TargetApi;
 import android.content.Context;
