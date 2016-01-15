@@ -154,7 +154,7 @@ public class AnimationTestActivity extends AppCompatActivity {
                 gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
                 gridView.setAdapter(gridViewAdapter);
                 gridViewAdapter.notifyDataSetChanged();
-                selectorLayout.requestLayout();
+                selectorLayout.requestLayoutByObject(false);
                 selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Expanable);
                 displayOrHidden();
             }
@@ -166,7 +166,7 @@ public class AnimationTestActivity extends AppCompatActivity {
                 gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
                 gridView.setAdapter(gridViewAdapter);
                 gridViewAdapter.notifyDataSetChanged();
-                selectorLayout.requestLayout();
+                selectorLayout.requestLayoutByObject(false);
                 selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Drawable);
                 displayOrHidden();
             }

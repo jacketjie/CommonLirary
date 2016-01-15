@@ -71,6 +71,9 @@ public class SelectorLayout extends LinearLayout {
 
     private boolean hadInited;
 
+    private boolean hasDisplayed ;
+    private boolean isFromSystem = true;
+
 
     public enum Direction {
         Top,
@@ -151,7 +154,10 @@ public class SelectorLayout extends LinearLayout {
                 break;
         }
         ta.recycle();
+
+        setVisibility(GONE);
     }
+
 
     public Styleable getAnimationStyle() {
         return curStyle;
@@ -540,9 +546,16 @@ public class SelectorLayout extends LinearLayout {
         height += getPaddingTop() + getPaddingBottom() + childMeasuredHeight;
 //        Log.e("SelectorLayout", "width=" + width + ",height=" + height);
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width, heightMode == MeasureSpec.EXACTLY ? heightSize : height);
-        setRealHeight(getMeasuredHeight());
-        setRealWidth(getMeasuredWidth());
+        if (!isFromSystem){
+            setRealHeight(getMeasuredHeight());
+            setRealWidth(getMeasuredWidth());
+        }
 //        moveToHidden();
+    }
+
+    public void requestLayoutByObject(boolean isFromSystem){
+        this.isFromSystem = isFromSystem;
+        this.requestLayout();
     }
 
     /**
@@ -651,20 +664,20 @@ public class SelectorLayout extends LinearLayout {
     private Integer realWidth = null;
 
     private Integer getRealHeight() {
-        return realHeight;
+        return realHeight == null ? getMeasuredHeight():realHeight;
     }
 
     private void setRealHeight(Integer realHeight) {
-        if (this.realHeight == null && realHeight > 0)
+        if (realHeight != null && realHeight > 0)
             this.realHeight = realHeight;
     }
 
     private Integer getRealWidth() {
-        return realWidth;
+        return realWidth == null ? getMeasuredWidth() : realWidth;
     }
 
     private void setRealWidth(Integer realWidth) {
-        if (this.realWidth == null && realWidth > 0)
+        if (realWidth != null && realWidth > 0)
             this.realWidth = realWidth;
     }
 
@@ -810,6 +823,11 @@ public class SelectorLayout extends LinearLayout {
     public void displayOrHidden() {
         if (isAnimation)
             return;
+        setVisibility(VISIBLE);
+        if (!hasDisplayed){
+            moveToHidden();
+            hasDisplayed = true;
+        }
         if (getDirectionIndex() == 0) {
             switch (getStyle(curStyle)) {
                 case DRAWABLE_STYLE:
