@@ -171,7 +171,7 @@ public class SelectorLayout extends LinearLayout {
 //            setTranslationY(0);
 //        } else if (curStyle == Styleable.Expanable) {
 //            getLayoutParams().height = getRealHeight();
-//            requestLayout();
+//            requestLayoutByObject(true);
 //        }
         resetAnimationStyle();
 
@@ -189,22 +189,22 @@ public class SelectorLayout extends LinearLayout {
                     if (getDirectionIndex() == 0) {
                         setTranslationY(0);
                         getLayoutParams().height = 0;
-                        requestLayout();
+                        requestLayoutByObject(true);
                     }
                     if(getDirectionIndex() == 1){
                         setTranslationX(0);
                         getLayoutParams().width = 0;
-                        requestLayout();
+                        requestLayoutByObject(true);
                     }
                     if (getDirectionIndex() == 2) {
                         setTranslationY(getRealHeight());
                         getLayoutParams().height = 0;
-                        requestLayout();
+                        requestLayoutByObject(true);
                     }
                     if(getDirectionIndex() == 3){
                         setTranslationX(getRealWidth());
                         getLayoutParams().width = 0;
-                        requestLayout();
+                        requestLayoutByObject(true);
                     }
                 }
                 break;
@@ -212,22 +212,22 @@ public class SelectorLayout extends LinearLayout {
                 if (!isExpand()) {
                     if (getDirectionIndex() == 0) {
                         getLayoutParams().height = getRealHeight();
-                        requestLayout();
+                        requestLayoutByObject(true);
                         setTranslationY(-getRealHeight());
                     }
                     if (getDirectionIndex() == 1)  {
                         getLayoutParams().width = getRealWidth();
-                        requestLayout();
+                        requestLayoutByObject(true);
                         setTranslationX(-getRealWidth());
                     }
                     if (getDirectionIndex() == 2) {
                         getLayoutParams().height = getRealHeight();
-                        requestLayout();
+                        requestLayoutByObject(true);
                         setTranslationY(getRealHeight());
                     }
                     if (getDirectionIndex() == 3)  {
                         getLayoutParams().width = getRealWidth();
-                        requestLayout();
+                        requestLayoutByObject(true);
                         setTranslationX(getRealWidth());
                     }
                 }
@@ -273,7 +273,7 @@ public class SelectorLayout extends LinearLayout {
                         if (!isExpand()) {
                             getLayoutParams().width = getRealWidth();
                             getLayoutParams().height = 0;
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -291,7 +291,7 @@ public class SelectorLayout extends LinearLayout {
 //                            getLayoutParams().width = 0;
                             getLayoutParams().height = 0;
                             setTranslationY(0);
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -310,7 +310,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().width = getRealWidth();
                             getLayoutParams().height = 0;
                             setTranslationX(0);
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -330,7 +330,7 @@ public class SelectorLayout extends LinearLayout {
                         if (!isExpand()) {
                             getLayoutParams().width = 0;
                             getLayoutParams().height = getRealHeight();
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -349,7 +349,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().width = 0;
                             getLayoutParams().height = getRealHeight();
                             setTranslationY(0);
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -367,7 +367,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().width = 0;
                             getLayoutParams().height = getRealHeight();
                             setTranslationX(0);
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -388,7 +388,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().width = getRealWidth();
                             getLayoutParams().height = 0;
                             setTranslationY(getRealHeight());
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -406,7 +406,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().width = getRealWidth();
                             getLayoutParams().height = 0;
                             setTranslationY(getRealHeight());
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -425,7 +425,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().width = getRealWidth();
                             getLayoutParams().height = 0;
                             setTranslationX(0);
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -447,7 +447,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().height = getRealHeight();
                             setTranslationY(0);
                             setTranslationX(getRealWidth());
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -467,7 +467,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().height = getRealHeight();
                             setTranslationX(getRealWidth());
                             setTranslationY(0);
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -487,7 +487,7 @@ public class SelectorLayout extends LinearLayout {
                             getLayoutParams().height = getRealHeight();
                             setTranslationX(getRealWidth());
                             setTranslationY(0);
-                            requestLayout();
+                            requestLayoutByObject(true);
                         }
                         break;
                 }
@@ -573,7 +573,7 @@ public class SelectorLayout extends LinearLayout {
                         break;
                     case EXPANDABLE_STYLE:
                         getLayoutParams().height = 0;
-                        requestLayout();
+                        requestLayoutByObject(true);
                         break;
                 }
             }
@@ -584,7 +584,7 @@ public class SelectorLayout extends LinearLayout {
                         break;
                     case EXPANDABLE_STYLE:
                         getLayoutParams().width = 0;
-                        requestLayout();
+                        requestLayoutByObject(true);
                         break;
                 }
             }
@@ -596,7 +596,7 @@ public class SelectorLayout extends LinearLayout {
                     case EXPANDABLE_STYLE:
                         getLayoutParams().height = 0;
                         setTranslationY(getRealHeight());
-                        requestLayout();
+                        requestLayoutByObject(true);
                         break;
                 }
             }
@@ -608,7 +608,7 @@ public class SelectorLayout extends LinearLayout {
                     case EXPANDABLE_STYLE:
                         getLayoutParams().width = 0;
                         setTranslationX(getRealWidth());
-                        requestLayout();
+                        requestLayoutByObject(true);
                         break;
                 }
             }
@@ -713,7 +713,7 @@ public class SelectorLayout extends LinearLayout {
                 if (getDirectionIndex() == 1) {
                     getLayoutParams().width = (int) value;
                 }
-                requestLayout();
+                requestLayoutByObject(true);
 //                Log.d("SelectorLayout", "width=" + getLayoutParams().width + ",height=" + getLayoutParams().height);
             }
         });
@@ -786,12 +786,13 @@ public class SelectorLayout extends LinearLayout {
                 if (getDirectionIndex() == 2){
                     getLayoutParams().height = (int) value;
                     setTranslationY(getRealHeight() - value);
-                    requestLayout();
+                    requestLayoutByObject(true);
                 }
                 if (getDirectionIndex() == 3){
                     getLayoutParams().width = (int) value;
                     setTranslationX(getRealWidth() - value);
-                    requestLayout();
+                    requestLayoutByObject(true);
+                   
                 }
 
             }
