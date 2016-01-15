@@ -98,5 +98,8 @@ public class EditTextActivity extends AppCompatActivity {
         tip.setDisplayGravity(Gravity.TOP | Gravity.RIGHT);
         tip.setHiddenOnNull(false);
         tip.setTarget(btn);
+        btn1.getHeight();
+        btn1.getMeasuredHeight();
+        btn.getMeasuredHeightAndState();
     }
 }

@@ -542,7 +542,7 @@ public class SelectorLayout extends LinearLayout {
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width, heightMode == MeasureSpec.EXACTLY ? heightSize : height);
         setRealHeight(getMeasuredHeight());
         setRealWidth(getMeasuredWidth());
-        moveToHidden();
+//        moveToHidden();
     }
 
     /**
@@ -604,6 +604,12 @@ public class SelectorLayout extends LinearLayout {
         }
     }
 
+    private void resetLayoutSize(){
+
+    }
+
+
+
     /**
      * 判断动画方向
      *
@@ -649,7 +655,7 @@ public class SelectorLayout extends LinearLayout {
     }
 
     private void setRealHeight(Integer realHeight) {
-        if (this.realHeight == null)
+        if (this.realHeight == null && realHeight > 0)
             this.realHeight = realHeight;
     }
 
@@ -658,7 +664,7 @@ public class SelectorLayout extends LinearLayout {
     }
 
     private void setRealWidth(Integer realWidth) {
-        if (this.realWidth == null)
+        if (this.realWidth == null && realWidth > 0)
             this.realWidth = realWidth;
     }
 

@@ -107,9 +107,6 @@ public class AnimationTestActivity extends AppCompatActivity {
 
     private void initData() {
 
-        gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
-        gridView.setAdapter(gridViewAdapter);
-
         List<TestActivity.Bean> mContents = new ArrayList<TestActivity.Bean>();
         for (int i = 0; i < 10; i++) {
             TestActivity.Bean bean = new TestActivity.Bean();
@@ -154,6 +151,10 @@ public class AnimationTestActivity extends AppCompatActivity {
 
             @Override
             public void onClick(final View v) {
+                gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
+                gridView.setAdapter(gridViewAdapter);
+                gridViewAdapter.notifyDataSetChanged();
+                selectorLayout.requestLayout();
                 selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Expanable);
                 displayOrHidden();
             }
@@ -162,6 +163,10 @@ public class AnimationTestActivity extends AppCompatActivity {
         drawableBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
+                gridView.setAdapter(gridViewAdapter);
+                gridViewAdapter.notifyDataSetChanged();
+                selectorLayout.requestLayout();
                 selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Drawable);
                 displayOrHidden();
             }
