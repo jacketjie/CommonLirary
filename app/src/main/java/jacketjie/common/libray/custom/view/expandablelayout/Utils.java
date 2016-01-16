@@ -14,6 +14,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 
+import jacketjie.common.libray.custom.view.animatedlayout.AnimatedLayoutListener;
+
 public class Utils {
 
     public static final int ACCELERATE_DECELERATE_INTERPOLATOR = 0;
@@ -88,5 +90,25 @@ public class Utils {
         if (timer instanceof OvershootInterpolator)
             style = 10;
         return style;
+    }
+
+    public static AnimatedLayoutListener.Direction getAnimationDirection(int style) {
+
+        AnimatedLayoutListener.Direction mDirection = null;
+        switch (style){
+            case 0:
+                mDirection = AnimatedLayoutListener.Direction.Top;
+                break;
+            case 1:
+                mDirection = AnimatedLayoutListener.Direction.Left;
+                break;
+            case 2:
+                mDirection = AnimatedLayoutListener.Direction.Right;
+                break;
+            default:
+                mDirection = AnimatedLayoutListener.Direction.Top;
+                break;
+        }
+        return mDirection;
     }
 }

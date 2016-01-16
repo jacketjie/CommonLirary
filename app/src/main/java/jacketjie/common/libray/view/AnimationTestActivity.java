@@ -6,9 +6,11 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,8 +35,11 @@ import de.greenrobot.event.EventBus;
 import jacketjie.common.libray.R;
 import jacketjie.common.libray.TestActivity;
 import jacketjie.common.libray.custom.view.SelectorLayout;
+import jacketjie.common.libray.custom.view.animatedlayout.AnimatedLayoutListener;
+import jacketjie.common.libray.custom.view.animatedlayout.DrawableLinearLayout;
 import jacketjie.common.libray.custom.view.expandablelayout.Utils;
 import jacketjie.common.libray.others.ScreenUtils;
+import jacketjie.common.libray.others.ToastUtils;
 
 /**
  * Created by Administrator on 2016/1/7.
@@ -62,6 +67,30 @@ public class AnimationTestActivity extends AppCompatActivity {
     private RadioButton bottom;
     private RadioButton right;
 
+    private DrawableLinearLayout drawableLinearLayout;
+
+    private AsyncTask<String,Void,String> task = new AsyncTask<String,Void,String>() {
+        @Override
+        protected String doInBackground(String[] params) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
+            gridView.setAdapter(gridViewAdapter);
+            gridViewAdapter.notifyDataSetChanged();
+            drawableLinearLayout.resetLayout();
+            ToastUtils.showShort(getApplicationContext(),"load completed");
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +101,7 @@ public class AnimationTestActivity extends AppCompatActivity {
         initViews();
         initData();
         setEventListener();
+        task.execute("");
     }
 
     private void initViews() {
@@ -96,12 +126,15 @@ public class AnimationTestActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.id_listview);
 
         bg = (ImageView) findViewById(R.id.id_bg);
-        if (selectorLayout.getDirectionIndex() == 0) {
-            top.setChecked(true);
-        }
-        if (selectorLayout.getDirectionIndex() == 1) {
-            left.setChecked(true);
-        }
+//        if (selectorLayout.getDirectionIndex() == 0) {
+//            top.setChecked(true);
+//        }
+//        if (selectorLayout.getDirectionIndex() == 1) {
+//            left.setChecked(true);
+//        }
+
+        drawableLinearLayout = (DrawableLinearLayout) findViewById(R.id.id_drawable_layout);
+
 
     }
 
@@ -122,6 +155,8 @@ public class AnimationTestActivity extends AppCompatActivity {
         TestActivity.MyAdapter myAdapter = new TestActivity.MyAdapter(this, mContents, R.layout.list_item);
         listView.setAdapter(myAdapter);
 
+        gridViewAdapter = new GridViewAdapter(new ArrayList<String>());
+        gridView.setAdapter(gridViewAdapter);
     }
 
     private void setEventListener() {
@@ -130,16 +165,19 @@ public class AnimationTestActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.id_vertical:
-                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Top);
+//                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Top);
+                        drawableLinearLayout.setDirection(AnimatedLayoutListener.Direction.Top);
                         break;
                     case R.id.id_horizontal:
-                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Left);
+                        drawableLinearLayout.setDirection(AnimatedLayoutListener.Direction.Left);
+//                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Left);
                         break;
                     case R.id.id_bottom:
-                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Bottom);
+//                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Bottom);
                         break;
                     case R.id.id_right:
-                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Right);
+                        drawableLinearLayout.setDirection(AnimatedLayoutListener.Direction.Right);
+//                        selectorLayout.setAnimationDirection(SelectorLayout.Direction.Right);
                         break;
                 }
             }
@@ -151,24 +189,23 @@ public class AnimationTestActivity extends AppCompatActivity {
 
             @Override
             public void onClick(final View v) {
-                gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
-                gridView.setAdapter(gridViewAdapter);
-                gridViewAdapter.notifyDataSetChanged();
-                selectorLayout.requestLayoutByObject(false);
-                selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Expanable);
-                displayOrHidden();
+//                gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
+//                gridView.setAdapter(gridViewAdapter);
+//                gridViewAdapter.notifyDataSetChanged();
+//                selectorLayout.requestLayoutByObject(false);
+//                selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Expanable);
+//                displayOrHidden();
             }
         });
 
         drawableBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
-                gridView.setAdapter(gridViewAdapter);
-                gridViewAdapter.notifyDataSetChanged();
-                selectorLayout.requestLayoutByObject(false);
-                selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Drawable);
+
+//                selectorLayout.requestLayoutByObject(false);
+//                selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Drawable);
                 displayOrHidden();
+
             }
         });
 
@@ -248,11 +285,18 @@ public class AnimationTestActivity extends AppCompatActivity {
      * 设置动画
      */
     private void displayOrHidden() {
-        selectorLayout.displayOrHidden();
-        if (selectorLayout.isExpand()) {
+//        selectorLayout.displayOrHidden();
+//        if (selectorLayout.isExpand()) {
+//            setBgAnimation(selectorLayout.getDuration(), 0, 104);
+//        } else {
+//            setBgAnimation(selectorLayout.getDuration(), 104, 0);
+//        }
+        drawableLinearLayout.toggle();
+        if (drawableLinearLayout.isExpandable()){
             setBgAnimation(selectorLayout.getDuration(), 0, 104);
-        } else {
+        }else {
             setBgAnimation(selectorLayout.getDuration(), 104, 0);
+
         }
     }
 
@@ -325,14 +369,20 @@ public class AnimationTestActivity extends AppCompatActivity {
                 int eX = (int) ev.getX();
                 int eY = (int) ev.getY();
                 Rect rect = new Rect();
-                selectorLayout.getLocalVisibleRect(rect);
+//                selectorLayout.getLocalVisibleRect(rect);
+                drawableLinearLayout.getLocalVisibleRect(rect);
                 int[] position = new int[2];
-                selectorLayout.getLocationOnScreen(position);
+//                selectorLayout.getLocationOnScreen(position);
+                drawableLinearLayout.getLocationOnScreen(position);
                 rect.left = rect.left + position[0];
                 rect.right = rect.right + position[0];
                 rect.top = rect.top + position[1];
                 rect.bottom = rect.bottom + position[1];
-                if (selectorLayout.isExpand() && eY > rect.bottom) {
+//                if (selectorLayout.isExpand() && eY > rect.bottom) {
+//                    displayOrHidden();
+//                    return true;
+//                }
+                if (drawableLinearLayout.isExpandable() && eY > rect.bottom) {
                     displayOrHidden();
                     return true;
                 }
@@ -387,39 +437,49 @@ public class AnimationTestActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_accelerateDecelerate:
-                selectorLayout.setInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR);
                 break;
             case R.id.action_accelerate:
-                selectorLayout.setInterpolator(Utils.ACCELERATE_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.ACCELERATE_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.ACCELERATE_INTERPOLATOR);
                 break;
             case R.id.action_anticipate:
-                selectorLayout.setInterpolator(Utils.ANTICIPATE_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.ANTICIPATE_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.ANTICIPATE_INTERPOLATOR);
                 break;
             case R.id.action_anticipateOvershoot:
-                selectorLayout.setInterpolator(Utils.ANTICIPATE_OVERSHOOT_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.ANTICIPATE_OVERSHOOT_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.ANTICIPATE_OVERSHOOT_INTERPOLATOR);
                 break;
             case R.id.action_decelerate:
-                selectorLayout.setInterpolator(Utils.DECELERATE_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.DECELERATE_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.DECELERATE_INTERPOLATOR);
 
                 break;
             case R.id.action_fastOutLinearIn:
-                selectorLayout.setInterpolator(Utils.FAST_OUT_LINEAR_IN_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.FAST_OUT_LINEAR_IN_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.FAST_OUT_LINEAR_IN_INTERPOLATOR);
 
                 break;
             case R.id.action_fastOutSlowIn:
-                selectorLayout.setInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR);
 
                 break;
             case R.id.action_linear:
-                selectorLayout.setInterpolator(Utils.LINEAR_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.LINEAR_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.LINEAR_INTERPOLATOR);
 
                 break;
             case R.id.action_linearOutSlowIn:
-                selectorLayout.setInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR);
 
                 break;
             case R.id.action_overshoot:
-                selectorLayout.setInterpolator(Utils.OVERSHOOT_INTERPOLATOR);
+//                selectorLayout.setInterpolator(Utils.OVERSHOOT_INTERPOLATOR);
+                drawableLinearLayout.setInterpolator(Utils.OVERSHOOT_INTERPOLATOR);
                 break;
         }
         item.setChecked(true);

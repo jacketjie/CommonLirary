@@ -104,17 +104,36 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent" />
+        <jacketjie.common.libray.custom.view.animatedlayout.DrawableLinearLayout
+            android:id="@+id/id_drawable_layout"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <GridView
+                android:id="@+id/id_gridview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#f5f5f5"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:horizontalSpacing="10dp"
+                android:numColumns="3"
+                android:padding="10dp"
+                android:scrollbars="none"
+                android:verticalSpacing="10dp" />
+        </jacketjie.common.libray.custom.view.animatedlayout.DrawableLinearLayout>
 
         <jacketjie.common.libray.custom.view.SelectorLayout
             android:id="@+id/id_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             app:duration="120"
             app:style="drawable">
 
             <GridView
-                android:id="@+id/id_gridview"
+                android:id="@+id/id_gridview1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#f5f5f5"

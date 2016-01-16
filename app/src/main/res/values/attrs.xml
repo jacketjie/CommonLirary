@@ -170,4 +170,31 @@
             <enum name="right" value="2" />
         </attr>
     </declare-styleable>
+
+
+    <!--DrawableLinearLayout-->
+    <declare-styleable name="DrawableLinearLayout">
+        <!--收缩动画时长-->
+        <attr name="dll_duration" format="integer" />
+        <!--动画收缩方向-->
+        <attr name="dll_direction" format="enum">
+            <enum name="top" value="0" />
+            <enum name="left" value="1" />
+            <enum name="bottom" value="2" />
+        </attr>
+        <!--动画插值器-->
+        <attr name="dll_interpolator" format="enum">
+            <enum name="accelerateDecelerate" value="0" />
+            <enum name="accelerate" value="1" />
+            <enum name="anticipate" value="2" />
+            <enum name="anticipateOvershoot" value="3" />
+            <enum name="bounce" value="4" />
+            <enum name="decelerate" value="5" />
+            <enum name="fastOutLinearIn" value="6" />
+            <enum name="fastOutSlowIn" value="7" />
+            <enum name="linear" value="8" />
+            <enum name="linearOutSlowIn" value="9" />
+            <enum name="overshoot" value="10" />
+        </attr>
+    </declare-styleable>
 </resources>
