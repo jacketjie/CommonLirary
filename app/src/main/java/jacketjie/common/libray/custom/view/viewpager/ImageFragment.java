@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import jacketjie.common.libray.R;
+import jacketjie.common.libray.others.ScreenUtils;
 import jacketjie.common.libray.others.ToastUtils;
 
 /**
@@ -25,10 +26,10 @@ public class ImageFragment extends Fragment {
         View view = inflater.inflate(R.layout.view_pager_item, container, false);
         ImageView imageView = (ImageView) view.findViewById(R.id.id_image);
         resId = getArguments().getString("ImageRes");
-//        ViewGroup.LayoutParams lp = imageView.getLayoutParams();
-//        lp.height = ScreenUtils.getScreenWidth(getContext());
-//        lp.width = ScreenUtils.getScreenWidth(getContext());
-//        imageView.setLayoutParams(lp);
+        ViewGroup.LayoutParams lp = imageView.getLayoutParams();
+        lp.width = ScreenUtils.getScreenWidth(getContext());
+        lp.height = (int) (ScreenUtils.getScreenWidth(getContext()) * 0.5);
+        imageView.setLayoutParams(lp);
         ImageLoader.getInstance().displayImage(resId, imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

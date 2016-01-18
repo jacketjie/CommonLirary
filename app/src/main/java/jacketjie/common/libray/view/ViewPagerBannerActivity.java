@@ -33,12 +33,16 @@ public class ViewPagerBannerActivity extends AppCompatActivity {
         urls.add(ImageDownloader.Scheme.ASSETS.wrap("3.jpg"));
         urls.add(ImageDownloader.Scheme.ASSETS.wrap("4.jpg"));
         mViewPager = (ViewPager) findViewById(R.id.id_viewPager);
+//        mViewPager = new ViewPager(this);
         indicator = (CirclePageIndicator) findViewById(R.id.id_indicator);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(),urls,true);
         mViewPager.setAdapter(adapter);
+        adapter.setTarget(mViewPager);
+//        setContentView(mViewPager);
         indicator.setViewPager(mViewPager);
 
 //        banner = (ScrollBanner) findViewById(R.id.id_banner);
+//        banner.setBanner(getSupportFragmentManager(),urls);
 //        banner.resetBanner(getSupportFragmentManager(),urls);
 //        mViewPager = (ViewPager) findViewById(R.id.id_view_pager);
 //        List<Integer> res = new ArrayList<Integer>();

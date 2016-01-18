@@ -52,7 +52,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public void finishUpdate(ViewGroup container) {
-//        super.finishUpdate(container);
+        super.finishUpdate(container);
+
         if (mViewPager != null){
             int pos = mViewPager.getCurrentItem();
             if (pos == 0){
@@ -61,6 +62,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 mViewPager.setCurrentItem(imageRes.size() - 1,false);
             }
         }
-        super.finishUpdate(container);
+//        super.finishUpdate(container);
     }
 }
