@@ -9,7 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 /**
- * Created by Administrator on 2016/1/6.
+ * Created by Administrator on 2016/test_1/6.
  */
 public class RequestManager {
     private static RequestManager mInstance;

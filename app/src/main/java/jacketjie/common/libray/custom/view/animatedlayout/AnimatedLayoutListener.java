@@ -1,7 +1,7 @@
 package jacketjie.common.libray.custom.view.animatedlayout;
 
 /**
- * Created by wujie on 2016/1/15.
+ * Created by wujie on 2016/test_1/15.
  */
 public interface AnimatedLayoutListener {
     int vertical = 0;

@@ -2,6 +2,7 @@ package jacketjie.common.libray.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -17,7 +18,7 @@ import jacketjie.common.libray.R;
 import jacketjie.common.libray.custom.view.bradge.BadgeTipView;
 
 /**
- * Created by Administrator on 2016/1/11.
+ * Created by Administrator on 2016/test_1/11.
  */
 public class EditTextActivity extends AppCompatActivity {
     /**
@@ -38,6 +39,10 @@ public class EditTextActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("EditText");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         final EditText editText = (EditText) findViewById(R.id.id_edit);
         editText.setFilters(new InputFilter[]{
                 new InputFilter() {

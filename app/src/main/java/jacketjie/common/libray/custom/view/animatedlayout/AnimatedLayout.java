@@ -3,7 +3,7 @@ package jacketjie.common.libray.custom.view.animatedlayout;
 import jacketjie.common.libray.custom.view.expandablelayout.Utils;
 
 /**
- * Created by wujie on 2016/1/15.
+ * Created by wujie on 2016/test_1/15.
  */
 public interface AnimatedLayout {
     int DEFAULT_DURATION = 200;

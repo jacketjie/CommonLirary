@@ -6,26 +6,23 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +31,7 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import jacketjie.common.libray.R;
 import jacketjie.common.libray.TestActivity;
+import jacketjie.common.libray.adapter.GridViewAdapter;
 import jacketjie.common.libray.custom.view.SelectorLayout;
 import jacketjie.common.libray.custom.view.animatedlayout.AnimatedLayoutListener;
 import jacketjie.common.libray.custom.view.animatedlayout.DrawableLinearLayout;
@@ -42,7 +40,7 @@ import jacketjie.common.libray.others.ScreenUtils;
 import jacketjie.common.libray.others.ToastUtils;
 
 /**
- * Created by Administrator on 2016/1/7.
+ * Created by Administrator on 2016/test_1/7.
  */
 public class AnimationTestActivity extends AppCompatActivity {
     private Button expandableBtn;
@@ -53,6 +51,8 @@ public class AnimationTestActivity extends AppCompatActivity {
     private ListView listView;
     private int screenWidth;
     private String[] mDatas = {"优美散文", "短篇小说", "美文日赏", "青春碎碎念", "左岸阅读", "慢文艺", "诗歌精选", "经典语录"};
+    private String[] mDatas1 = {"读美文", "青年周摘", "二更食堂", "不止读书", "读者投稿"};
+    private List<String> dataList;
     private boolean isFirst;
     private boolean isExpand;
     private boolean isAnimating;
@@ -67,29 +67,10 @@ public class AnimationTestActivity extends AppCompatActivity {
     private RadioButton bottom;
     private RadioButton right;
 
+
     private DrawableLinearLayout drawableLinearLayout;
-
-    private AsyncTask<String,Void,String> task = new AsyncTask<String,Void,String>() {
-        @Override
-        protected String doInBackground(String[] params) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
-            gridView.setAdapter(gridViewAdapter);
-            gridViewAdapter.notifyDataSetChanged();
-            drawableLinearLayout.resetLayout();
-            ToastUtils.showShort(getApplicationContext(),"load completed");
-        }
-    };
+    private int lastClickPos = -1;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,14 +82,12 @@ public class AnimationTestActivity extends AppCompatActivity {
         initViews();
         initData();
         setEventListener();
-        task.execute("");
     }
 
     private void initViews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Animation");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         group = (RadioGroup) findViewById(R.id.id_top);
         expandableBtn = (Button) findViewById(R.id.id_animation);
@@ -126,16 +105,21 @@ public class AnimationTestActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.id_listview);
 
         bg = (ImageView) findViewById(R.id.id_bg);
-//        if (selectorLayout.getDirectionIndex() == 0) {
-//            top.setChecked(true);
-//        }
-//        if (selectorLayout.getDirectionIndex() == 1) {
-//            left.setChecked(true);
-//        }
 
         drawableLinearLayout = (DrawableLinearLayout) findViewById(R.id.id_drawable_layout);
 
+        setZForLOLLIPOP();
 
+    }
+    private void setZForLOLLIPOP() {
+        View top1 = findViewById(R.id.id_top1);
+        View top2 = findViewById(R.id.id_top);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            top1.setTranslationZ(8);
+            top2.setTranslationZ(8);
+            float z = toolbar.getTranslationZ();
+            Log.e("AnimationActivity","toolbar Z:"+z);
+        }
     }
 
     private void initData() {
@@ -154,8 +138,8 @@ public class AnimationTestActivity extends AppCompatActivity {
 
         TestActivity.MyAdapter myAdapter = new TestActivity.MyAdapter(this, mContents, R.layout.list_item);
         listView.setAdapter(myAdapter);
-
-        gridViewAdapter = new GridViewAdapter(new ArrayList<String>());
+        dataList = new ArrayList<String>();
+        gridViewAdapter = new GridViewAdapter(dataList,this);
         gridView.setAdapter(gridViewAdapter);
     }
 
@@ -189,33 +173,56 @@ public class AnimationTestActivity extends AppCompatActivity {
 
             @Override
             public void onClick(final View v) {
-//                gridViewAdapter = new GridViewAdapter(Arrays.asList(mDatas));
-//                gridView.setAdapter(gridViewAdapter);
-//                gridViewAdapter.notifyDataSetChanged();
-//                selectorLayout.requestLayoutByObject(false);
-//                selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Expanable);
-//                displayOrHidden();
+                setAnimByPos(0);
             }
         });
 
         drawableBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-
-//                selectorLayout.requestLayoutByObject(false);
-//                selectorLayout.setAnimationStyle(SelectorLayout.Styleable.Drawable);
-                displayOrHidden();
-
+                setAnimByPos(1);
             }
         });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), EditTextActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ViewPagerBannerActivity.class);
                 startActivity(intent);
             }
         });
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ToastUtils.showShort(getApplicationContext(),dataList.get(position));
+                gridViewAdapter.updateSelect(position);
+                displayOrHidden();
+            }
+        });
+    }
+
+    private void setAnimByPos(int pos){
+        if (pos == lastClickPos){
+            displayOrHidden();
+        }else{
+            if (drawableLinearLayout.isExpandableStatus()){
+                drawableLinearLayout.toggle();
+            }
+            dataList.clear();
+            switch (pos){
+                case 0:
+                    dataList.addAll(Arrays.asList(mDatas1));
+                    break;
+                case 1:
+                    dataList.addAll(Arrays.asList(mDatas));
+                    break;
+            }
+            gridViewAdapter.notifyDataSetChanged();
+            drawableLinearLayout.requestLayoutByAnim();
+
+            displayOrHidden();
+            lastClickPos = pos;
+        }
     }
 
     public void onEventMainThread(EventMessage message){
@@ -285,82 +292,15 @@ public class AnimationTestActivity extends AppCompatActivity {
      * 设置动画
      */
     private void displayOrHidden() {
-//        selectorLayout.displayOrHidden();
-//        if (selectorLayout.isExpand()) {
-//            setBgAnimation(selectorLayout.getDuration(), 0, 104);
-//        } else {
-//            setBgAnimation(selectorLayout.getDuration(), 104, 0);
-//        }
-        drawableLinearLayout.toggle();
-        if (drawableLinearLayout.isExpandable()){
-            setBgAnimation(selectorLayout.getDuration(), 0, 104);
-        }else {
-            setBgAnimation(selectorLayout.getDuration(), 104, 0);
-
+        if (!drawableLinearLayout.isExpandableStatus()) {
+            setBgAnimation(drawableLinearLayout.getDuration(), 0, 104);
+        } else {
+            setBgAnimation(drawableLinearLayout.getDuration(), 104, 0);
         }
+        drawableLinearLayout.displayOrHidden();
     }
 
-    class GridViewAdapter extends BaseAdapter {
-        private List<String> mDatas;
-        private LayoutInflater inflater;
 
-        public GridViewAdapter(List<String> mDatas) {
-            this.mDatas = mDatas;
-            inflater = LayoutInflater.from(AnimationTestActivity.this);
-        }
-
-        @Override
-        public int getCount() {
-            return mDatas == null ? 0 : mDatas.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mDatas == null ? null : mDatas.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            final ViewHolder holder;
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.grid_item, parent, false);
-                holder = new ViewHolder();
-                holder.item = (Button) convertView.findViewById(R.id.grid_item);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            holder.item.setText(mDatas.get(position));
-            holder.item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    displayOrHidden();
-                    selectedPos = position;
-                    holder.item.setBackgroundResource(R.drawable.grid_item_selected);
-                    holder.item.setTextColor(Color.WHITE);
-                    Toast.makeText(getApplicationContext(), mDatas.get(position), Toast.LENGTH_SHORT).show();
-                    GridViewAdapter.this.notifyDataSetChanged();
-                }
-            });
-            if (selectedPos == position) {
-                holder.item.setTextColor(Color.WHITE);
-                holder.item.setBackgroundResource(R.drawable.grid_item_selected);
-            } else {
-                holder.item.setBackgroundResource(R.drawable.grid_item_default);
-                holder.item.setTextColor(Color.parseColor("#333333"));
-            }
-            return convertView;
-        }
-
-        class ViewHolder {
-            Button item;
-        }
-    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -382,7 +322,7 @@ public class AnimationTestActivity extends AppCompatActivity {
 //                    displayOrHidden();
 //                    return true;
 //                }
-                if (drawableLinearLayout.isExpandable() && eY > rect.bottom) {
+                if (drawableLinearLayout.isExpandableStatus() && eY > rect.bottom) {
                     displayOrHidden();
                     return true;
                 }
@@ -393,6 +333,18 @@ public class AnimationTestActivity extends AppCompatActivity {
                 break;
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            if (drawableLinearLayout.isExpandableStatus()){
+                displayOrHidden();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

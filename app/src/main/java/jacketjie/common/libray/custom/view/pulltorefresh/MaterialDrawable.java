@@ -270,7 +270,7 @@ class MaterialDrawable extends RefreshDrawable implements Animatable {
     /**
      * Set the amount of rotation to apply to the progress spinner.
      *
-     * @param rotation Rotation is from [0..1]
+     * @param rotation Rotation is from [0..test_1]
      */
     public void setProgressRotation(float rotation) {
         mRing.setRotation(rotation);
@@ -424,7 +424,7 @@ class MaterialDrawable extends RefreshDrawable implements Animatable {
         final Animation finishRingAnimation = new Animation() {
             public void applyTransformation(float interpolatedTime, Transformation t) {
                 // shrink back down and complete a full rotation before starting other circles
-                // Rotation goes between [0..1].
+                // Rotation goes between [0..test_1].
                 float targetRotation = (float) (Math.floor(ring.getStartingRotation()
                         / MAX_PROGRESS_ARC) + 1f);
                 final float startTrim = ring.getStartingStartTrim()
@@ -797,7 +797,7 @@ class MaterialDrawable extends RefreshDrawable implements Animatable {
         }
 
         /**
-         * @return The amount the progress spinner is currently rotated, between [0..1].
+         * @return The amount the progress spinner is currently rotated, between [0..test_1].
          */
         public float getStartingRotation() {
             return mStartingRotation;

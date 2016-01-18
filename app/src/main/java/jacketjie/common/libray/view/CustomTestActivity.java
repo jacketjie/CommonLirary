@@ -13,7 +13,7 @@ import android.widget.TextView;
 import jacketjie.common.libray.R;
 
 /**
- * Created by Administrator on 2016/1/5.
+ * Created by Administrator on 2016/test_1/5.
  */
 public class CustomTestActivity extends AppCompatActivity {
     private ValueAnimator mAnimator;

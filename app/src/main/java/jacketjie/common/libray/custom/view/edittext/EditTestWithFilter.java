@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * 自定义限制文字长度
- * Created by Administrator on 2016/1/11.
+ * Created by Administrator on 2016/test_1/11.
  */
 public class EditTestWithFilter extends EditText {
     /**

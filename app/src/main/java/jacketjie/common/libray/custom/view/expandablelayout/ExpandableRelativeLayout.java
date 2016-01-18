@@ -315,7 +315,7 @@ public class ExpandableRelativeLayout extends RelativeLayout implements Expandab
     /**
      * Sets orientation of expanse animation.
      *
-     * @param orientation Set 0 if orientation is horizontal, 1 if orientation is vertical
+     * @param orientation Set 0 if orientation is horizontal, test_1 if orientation is vertical
      */
     public void setOrientation(@Orientation final int orientation) {
         this.orientation = orientation;

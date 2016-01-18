@@ -20,7 +20,7 @@ import jacketjie.common.libray.others.DensityUtils;
 
 /**
  * View角标
- * Created by Administrator on 2016/1/13.
+ * Created by Administrator on 2016/test_1/13.
  */
 public class BadgeTipView extends TextView {
     private int bgRes = Color.RED;

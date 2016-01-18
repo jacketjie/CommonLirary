@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Administrator on 2016/1/12.
+ * Created by Administrator on 2016/test_1/12.
  */
 public class EventMessage  implements Parcelable{
     private int count;

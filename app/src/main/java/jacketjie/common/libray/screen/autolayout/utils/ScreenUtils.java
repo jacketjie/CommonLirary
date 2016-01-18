@@ -24,7 +24,7 @@ public class ScreenUtils
         Display d = w.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         d.getMetrics(metrics);
-// since SDK_INT = 1;
+// since SDK_INT = test_1;
         int widthPixels = metrics.widthPixels;
         int heightPixels = metrics.heightPixels;
 
