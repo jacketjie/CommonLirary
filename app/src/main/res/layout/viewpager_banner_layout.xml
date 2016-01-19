@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    android:background="@android:color/white"
-    android:layout_height="match_parent">
-
- <!--   <android.support.v4.view.ViewPager
-        android:id="@+id/id_view_pager"
+    <!--   <android.support.v4.view.ViewPager
+           android:id="@+id/id_view_pager"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"/>-->
+    <!--<include layout="@layout/view_pager_layout"/>-->
+    <jacketjie.common.libray.custom.view.viewpager.ScrollBanner
+        xmlns:pager="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/id_banner"
+        pager:banner_aspect_ratio="0.32"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>-->
-<include layout="@layout/view_pager_layout"/>
- <!--<jacketjie.common.libray.custom.view.viewpager.ScrollBanner-->
-     <!--android:id="@+id/id_banner"-->
-     <!--android:background="#f2f2f2"-->
-     <!--android:layout_width="360dp"-->
-     <!--android:layout_height="360dp"/>-->
+        android:layout_height="wrap_content" />
 </LinearLayout>
+
+

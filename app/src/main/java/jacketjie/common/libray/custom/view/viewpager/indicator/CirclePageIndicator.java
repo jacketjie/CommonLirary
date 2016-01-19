@@ -46,7 +46,7 @@ import static android.widget.LinearLayout.VERTICAL;
 public class CirclePageIndicator extends View implements PageIndicator {
     private static final int INVALID_POINTER = -1;
 
-    private int viewPagerCount;
+    private int viewPagerCount = 2;
     private float mRadius;
     private final Paint mPaintPageFill = new Paint(ANTI_ALIAS_FLAG);
     private final Paint mPaintStroke = new Paint(ANTI_ALIAS_FLAG);
@@ -65,6 +65,8 @@ public class CirclePageIndicator extends View implements PageIndicator {
     private float mLastMotionX = -1;
     private int mActivePointerId = INVALID_POINTER;
     private boolean mIsDragging;
+
+    private int viewPagerRealPosition;
 
 
     public CirclePageIndicator(Context context) {
@@ -204,7 +206,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
         if (mViewPager == null) {
             return;
         }
-        final int count = mViewPager.getAdapter().getCount();
+        final int count = viewPagerCount;
         if (count == 0) {
             return;
         }
@@ -320,19 +322,20 @@ public class CirclePageIndicator extends View implements PageIndicator {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 if (!mIsDragging) {
-                    final int count = mViewPager.getAdapter().getCount();
+//                    final int count = mViewPager.getAdapter().getCount();
+                    final int count = viewPagerCount;
                     final int width = getWidth();
                     final float halfWidth = width / 2f;
                     final float sixthWidth = width / 6f;
 
                     if ((mCurrentPage > 0) && (ev.getX() < halfWidth - sixthWidth)) {
                         if (action != MotionEvent.ACTION_CANCEL) {
-                            mViewPager.setCurrentItem(mCurrentPage - 1);
+                            mViewPager.setCurrentItem(viewPagerRealPosition  - 1);
                         }
                         return true;
                     } else if ((mCurrentPage < count - 1) && (ev.getX() > halfWidth + sixthWidth)) {
                         if (action != MotionEvent.ACTION_CANCEL) {
-                            mViewPager.setCurrentItem(mCurrentPage + 1);
+                            mViewPager.setCurrentItem(viewPagerRealPosition + 1);
                         }
                         return true;
                     }
@@ -397,7 +400,7 @@ public class CirclePageIndicator extends View implements PageIndicator {
             throw new IllegalStateException("ViewPager has not been bound.");
         }
         mViewPager.setCurrentItem(item);
-        mCurrentPage = item;
+        mCurrentPage = item & viewPagerCount;
         invalidate();
     }
 
@@ -417,7 +420,8 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        mCurrentPage = position;
+        viewPagerRealPosition = position;
+        mCurrentPage = position % viewPagerCount;
         mPageOffset = positionOffset;
         invalidate();
 
@@ -429,8 +433,9 @@ public class CirclePageIndicator extends View implements PageIndicator {
     @Override
     public void onPageSelected(int position) {
         if (mSnap || mScrollState == ViewPager.SCROLL_STATE_IDLE) {
-            mCurrentPage = position;
-            mSnapPage = position;
+            viewPagerRealPosition = position;
+            mCurrentPage = position % viewPagerCount;
+            mSnapPage = mCurrentPage;
             invalidate();
         }
 
@@ -475,7 +480,8 @@ public class CirclePageIndicator extends View implements PageIndicator {
             result = specSize;
         } else {
             //Calculate the width according the views count
-            final int count = mViewPager.getAdapter().getCount();
+//            final int count = mViewPager.getAdapter().getCount();
+            final int count = viewPagerCount;
             result = (int)(getPaddingLeft() + getPaddingRight()
                     + (count * 2 * mRadius) + (count - 1) * mRadius + 1);
             //Respect AT_MOST value if that was what is called for by measureSpec

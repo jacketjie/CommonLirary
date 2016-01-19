@@ -198,4 +198,24 @@
         </attr>
     </declare-styleable>
 
+    <!-- ScrollBanner-->
+    <declare-styleable name="ScrollBanner">
+        <!-- 长宽比，默认宽度为屏幕宽度，0~1之间-->
+        <attr name="banner_aspect_ratio" format="float" />
+        <!-- viewpager切换差值，时长为200*scroll_factor-->
+        <attr name="banner_scroll_factor" format="integer" />
+        <!-- viewpager切换周期-->
+        <attr name="banner_scroll_interval" format="integer" />
+        <!-- 是否可以轮播-->
+        <attr name="banner_can_cycle" format="boolean"/>
+        <!-- 是否需要页面指示器-->
+        <attr name="banner_need_indicator" format="boolean"/>
+        <!-- viewPager切换动画-->
+        <attr name="banner_trans_former" format="enum">
+            <enum name="defaultPage" value="0"/>
+            <enum name="depthPage" value="1"/>
+            <enum name="zommOutPage" value="2"/>
+        </attr>
+    </declare-styleable>
+
 </resources>

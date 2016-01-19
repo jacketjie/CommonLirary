@@ -1,4 +1,4 @@
-package jacketjie.common.libray.custom.view.viewpager;
+package jacketjie.common.libray.custom.view.viewpager.utils;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,14 +11,19 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import jacketjie.common.libray.R;
-import jacketjie.common.libray.others.ScreenUtils;
-import jacketjie.common.libray.others.ToastUtils;
+import jacketjie.common.libray.custom.view.viewpager.ScrollBanner;
 
 /**
  * Created by Administrator on 2016/1/18.
  */
 public class ImageFragment extends Fragment {
     private String resId;
+    private Object binderData;
+    private ScrollBanner.OnPageClickListener onPageClickListener;
+
+    public<T> void setOnPageClickListener(ScrollBanner.OnPageClickListener<T> onPageClickListener) {
+        this.onPageClickListener = onPageClickListener;
+    }
 
     @Nullable
     @Override
@@ -26,17 +31,22 @@ public class ImageFragment extends Fragment {
         View view = inflater.inflate(R.layout.view_pager_item, container, false);
         ImageView imageView = (ImageView) view.findViewById(R.id.id_image);
         resId = getArguments().getString("ImageRes");
-        ViewGroup.LayoutParams lp = imageView.getLayoutParams();
-        lp.width = ScreenUtils.getScreenWidth(getContext());
-        lp.height = (int) (ScreenUtils.getScreenWidth(getContext()) * 0.5);
-        imageView.setLayoutParams(lp);
+        binderData = getArguments().getSerializable("BinderData");
+        if (binderData == null) {
+            binderData = getArguments().getParcelable("BinderData");
+        }
         ImageLoader.getInstance().displayImage(resId, imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showShort(getContext(), resId);
+//                ToastUtils.showShort(getContext(), resId);
+//                Log.e("ImageFragment", "binderData:" + binderData.toString());
+                if (onPageClickListener != null) {
+                    onPageClickListener.onPageCilck(binderData);
+                }
             }
         });
         return view;
     }
+
 }

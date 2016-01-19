@@ -88,7 +88,12 @@ public class AnimationTestActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Animation");
         setSupportActionBar(toolbar);
-
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         group = (RadioGroup) findViewById(R.id.id_top);
         expandableBtn = (Button) findViewById(R.id.id_animation);
         drawableBtn = (Button) findViewById(R.id.id_location);
@@ -115,8 +120,8 @@ public class AnimationTestActivity extends AppCompatActivity {
         View top1 = findViewById(R.id.id_top1);
         View top2 = findViewById(R.id.id_top);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            top1.setTranslationZ(8);
-            top2.setTranslationZ(8);
+            top1.setTranslationZ(5);
+            top2.setTranslationZ(5);
             float z = toolbar.getTranslationZ();
             Log.e("AnimationActivity","toolbar Z:"+z);
         }
