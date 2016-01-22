@@ -13,6 +13,11 @@
         xmlns:pager="http://schemas.android.com/apk/res-auto"
         android:id="@+id/id_banner"
         pager:banner_aspect_ratio="0.32"
+        pager:banner_can_cycle="true"
+        pager:banner_need_indicator="true"
+        pager:banner_trans_former="defaultPage"
+        pager:banner_scroll_factor="3"
+        pager:banner_scroll_interval="5000"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

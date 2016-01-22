@@ -21,7 +21,7 @@ public class ImageFragment extends Fragment {
     private Object binderData;
     private ScrollBanner.OnPageClickListener onPageClickListener;
 
-    public<T> void setOnPageClickListener(ScrollBanner.OnPageClickListener<T> onPageClickListener) {
+    public <T> void setOnPageClickListener(ScrollBanner.OnPageClickListener<T> onPageClickListener) {
         this.onPageClickListener = onPageClickListener;
     }
 
@@ -30,22 +30,26 @@ public class ImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_pager_item, container, false);
         ImageView imageView = (ImageView) view.findViewById(R.id.id_image);
-        resId = getArguments().getString("ImageRes");
-        binderData = getArguments().getSerializable("BinderData");
-        if (binderData == null) {
-            binderData = getArguments().getParcelable("BinderData");
-        }
-        ImageLoader.getInstance().displayImage(resId, imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        try {
+            resId = getArguments().getString("ImageRes");
+            binderData = getArguments().getSerializable("BinderData");
+            if (binderData == null) {
+                binderData = getArguments().getParcelable("BinderData");
+            }
+            ImageLoader.getInstance().displayImage(resId, imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 //                ToastUtils.showShort(getContext(), resId);
 //                Log.e("ImageFragment", "binderData:" + binderData.toString());
-                if (onPageClickListener != null) {
-                    onPageClickListener.onPageCilck(binderData);
+                    if (onPageClickListener != null) {
+                        onPageClickListener.onPageCilck(binderData);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return view;
     }
 

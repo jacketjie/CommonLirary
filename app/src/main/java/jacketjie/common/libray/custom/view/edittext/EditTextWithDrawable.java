@@ -52,8 +52,8 @@ public class EditTextWithDrawable extends EditText implements TextWatcher {
             defaultDrawableRight = ta.getDrawable(R.styleable.EditTextWithDrawable_defaultDrawableRight);
             drawableLeftEnable = ta.getDrawable(R.styleable.EditTextWithDrawable_drawableLeftEnable);
             drawableRightEnable = ta.getDrawable(R.styleable.EditTextWithDrawable_drawableRightEnable);
-            drawLeft(defaultDrawableLeft);
-            drawRight(defaultDrawableRight);
+            drawBitmap(defaultDrawableLeft, defaultDrawableRight);
+//            drawRight(defaultDrawableRight);
             setTextChangeDrawable();
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,21 +103,23 @@ public class EditTextWithDrawable extends EditText implements TextWatcher {
         return super.onTouchEvent(event);
     }
 
-    public void drawLeft(Drawable drawableLeft) {
+    public void drawBitmap(Drawable drawableLeft,Drawable drawableRight) {
         if (drawableLeft != null) {
             drawableLeft.setBounds(0, 0, drawableLeft.getMinimumWidth(), drawableLeft.getMinimumHeight());
-            this.setCompoundDrawables(drawableLeft, null, null, null);
-
         }
-    }
-
-
-    public void drawRight(Drawable drawableRight) {
         if (drawableRight != null) {
             drawableRight.setBounds(0, 0, drawableRight.getMinimumWidth(), drawableRight.getMinimumHeight());
-            this.setCompoundDrawables(null, null, drawableRight, null);
         }
+        this.setCompoundDrawables(drawableLeft,null , drawableRight, null);
     }
+
+//
+//    public void drawRight(Drawable drawableRight) {
+//        if (drawableRight != null) {
+//            drawableRight.setBounds(0, 0, drawableRight.getMinimumWidth(), drawableRight.getMinimumHeight());
+//            this.setCompoundDrawables(null, null, drawableRight, null);
+//        }
+//    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -132,8 +134,8 @@ public class EditTextWithDrawable extends EditText implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         if (TextUtils.isEmpty(s.toString())) {
-            drawLeft(defaultDrawableLeft);
-            drawRight(defaultDrawableRight);
+            drawBitmap(defaultDrawableLeft, defaultDrawableRight);
+//            drawRight(defaultDrawableRight);
             if (defaultDrawableLeft != null) {
                 isDrawableLeftEnable = false;
             }
@@ -142,8 +144,8 @@ public class EditTextWithDrawable extends EditText implements TextWatcher {
             }
 
         } else {
-            drawLeft(drawableLeftEnable);
-            drawRight(drawableRightEnable);
+            drawBitmap(drawableLeftEnable, drawableRightEnable);
+//            drawRight(drawableRightEnable);
             if (defaultDrawableLeft != null) {
                 isDrawableLeftEnable = true;
             }

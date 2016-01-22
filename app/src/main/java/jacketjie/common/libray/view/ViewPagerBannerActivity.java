@@ -2,7 +2,6 @@ package jacketjie.common.libray.view;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.android.volley.VolleyError;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jacketjie.common.libray.R;
+import jacketjie.common.libray.custom.view.swipeback.SwipeBackActivity;
 import jacketjie.common.libray.custom.view.viewpager.ScrollBanner;
 import jacketjie.common.libray.custom.view.viewpager.TestBean;
 import jacketjie.common.libray.custom.view.viewpager.indicator.CirclePageIndicator;
@@ -22,7 +22,7 @@ import jacketjie.common.libray.others.ToastUtils;
 /**
  * Created by Administrator on 2016/test_1/18.
  */
-public class ViewPagerBannerActivity extends AppCompatActivity {
+public class ViewPagerBannerActivity extends SwipeBackActivity {
     private ScrollBanner banner;
     private List<String> urls;
     private ViewPager mViewPager;

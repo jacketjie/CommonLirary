@@ -23,4 +23,5 @@ banner.setBanner(getSupportFragmentManager(), urls, binderDatas);
 
 
 #VolleyHelper
-It is a Volley heplper utils,You just need to involve VolleyHeplper.Request...,
+    It is a Volley heplper utils,You just need to involve VolleyHeplper.Request...
+
